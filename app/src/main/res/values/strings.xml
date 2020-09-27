@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Kyle</string>
+    <string name="logo_kyle">logo_kyle</string>
+    <string name="login">Вход</string>
+    <string name="register">Регистрация</string>
+    <string name="continue_without">Продолжить без</string>
+    <string name="without_acc">аккаунта</string>
+</resources>
