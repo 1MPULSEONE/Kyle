@@ -10,9 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="">
-        <activity android:name=".SettingsActivity">
-
-        </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".MainRegisterActivity">
             <intent-filter>
