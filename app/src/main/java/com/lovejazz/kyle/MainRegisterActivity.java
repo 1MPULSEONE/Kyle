@@ -12,6 +12,7 @@ public class MainRegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Deleting toolbar
         try {
             this.getSupportActionBar().hide();
         } catch (NullPointerException e){
