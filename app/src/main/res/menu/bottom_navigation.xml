@@ -6,11 +6,11 @@
         android:icon="@drawable/lock_icon"
         android:title="@string/home" />
     <item
-        android:id="@+id/nav_favorites"
+        android:id="@+id/nav_create"
         android:icon="@drawable/create_icon"
         android:title="@string/create" />
     <item
-        android:id="@+id/nav_search"
+        android:id="@+id/nav_settings"
         android:icon="@drawable/settings_icon"
         android:title="@string/settings" />
 
