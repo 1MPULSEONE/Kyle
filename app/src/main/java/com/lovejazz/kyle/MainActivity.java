@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new PasswordsFragment();
                 case 1:
+                    return new CreateFragment();
+                case 2:
                     return new SettingsFragment();
             }
             return null;
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         //Returns the number of fragments
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }
