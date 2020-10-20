@@ -10,4 +10,10 @@
     <string name="home">Home</string>
     <string name="create">Create</string>
     <string name="settings">Settings</string>
+    <!--FragmentCreate strings-->
+    <string name="create_acc">Создание аккаунта</string>
+    <string name="choose_section">Выберите раздел</string>
+    <string name="description_arrow_btn">arrow_btn</string>
+    <string name="info">Информация</string>
+    <string name="settings_tab">Настройки</string>
 </resources>

@@ -8,4 +8,7 @@
     <color name="orange">#FF6A3A</color>
     <color name="black">#614F69</color>
     <color name="grey">#C6C6C6</color>
+    <color name="light_grey">#E1E1E4</color>
+    <color name="full_white">#FFFFFF</color>
+    <color name="color_grey">#B1B1B1</color>
 </resources>
