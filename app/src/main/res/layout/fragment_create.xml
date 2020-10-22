@@ -55,20 +55,21 @@
         app:layout_constraintVertical_bias="0.027" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingTop="10dp"
         android:gravity="center"
+        android:paddingLeft="5dp"
+        android:paddingTop="10dp"
+        android:paddingRight="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/choose_section">
 
         <Button
             android:id="@+id/button_info"
             android:layout_width="175dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:background="@drawable/info_tab_btn"
             android:fontFamily="sans-serif-black"
             android:text="@string/info"
@@ -84,7 +85,7 @@
         <Button
             android:id="@+id/button_settings"
             android:layout_width="175dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:background="@drawable/settings_tab_btn"
             android:fontFamily="sans-serif-black"
             android:text="@string/settings_tab"
@@ -97,6 +98,15 @@
             app:layout_constraintTop_toTopOf="@+id/button_info"
             app:layout_constraintVertical_bias="0.0" />
     </LinearLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/create_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
