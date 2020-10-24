@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,8 +26,15 @@ public class CreateFragment extends Fragment {
         //Connecting pager with adapter
         View RootView = inflater.inflate(R.layout.fragment_create, container, false);
         final CreatePagerAdapter createPagerAdapter = new CreatePagerAdapter(Objects.requireNonNull(getChildFragmentManager()));
-        final ViewPager pager = RootView.findViewById(R.id.create_pager);
+        final NonSwipeableViewPager pager = RootView.findViewById(R.id.create_pager);
         pager.setAdapter(createPagerAdapter);
+        //Disable swiping in viewPager
+        pager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
         //Creating infoButton listener
         Button infoBtn = RootView.findViewById(R.id.button_info);
         infoBtn.setOnClickListener(new View.OnClickListener() {

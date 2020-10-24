@@ -7,21 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".CreateFragment">
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:background="@color/full_white"
-        android:contentDescription="@string/description_arrow_btn"
-        android:scaleType="centerCrop"
-        android:src="@drawable/arrow"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.078"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.034" />
-
     <TextView
         android:id="@+id/create_acc"
         android:layout_width="wrap_content"
@@ -30,44 +15,32 @@
         android:text="@string/create_acc"
         android:textColor="@color/black"
         android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageButton"
-        app:layout_constraintVertical_bias="0.571" />
-
-    <TextView
-        android:id="@+id/choose_section"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@string/choose_section"
-        android:textColor="@color/light_grey"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/imageButton"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton"
-        app:layout_constraintVertical_bias="0.027" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.04000002" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         android:paddingLeft="5dp"
         android:paddingTop="10dp"
         android:paddingRight="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choose_section">
+        app:layout_constraintTop_toBottomOf="@+id/create_acc"
+        app:layout_constraintVertical_bias="0.0">
 
         <Button
             android:id="@+id/button_info"
-            android:layout_width="175dp"
+            android:layout_width="170dp"
             android:layout_height="40dp"
             android:background="@drawable/info_tab_btn"
             android:fontFamily="sans-serif-black"
@@ -83,7 +56,7 @@
 
         <Button
             android:id="@+id/button_settings"
-            android:layout_width="175dp"
+            android:layout_width="170dp"
             android:layout_height="40dp"
             android:background="@drawable/settings_tab_btn"
             android:fontFamily="sans-serif-black"
@@ -98,10 +71,10 @@
             app:layout_constraintVertical_bias="0.0" />
     </LinearLayout>
 
-    <androidx.viewpager.widget.ViewPager
+    <com.lovejazz.kyle.NonSwipeableViewPager
         android:id="@+id/create_pager"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
