@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ public class CreateFragment extends Fragment {
         // Inflate the layout for this fragment
         //Connecting pager with adapter
         View RootView = inflater.inflate(R.layout.fragment_create, container, false);
-        final CreatePagerAdapter createPagerAdapter = new CreatePagerAdapter(Objects.requireNonNull(getFragmentManager()),0);
+        final CreatePagerAdapter createPagerAdapter = new CreatePagerAdapter(Objects.requireNonNull(getChildFragmentManager()));
         final ViewPager pager = RootView.findViewById(R.id.create_pager);
         pager.setAdapter(createPagerAdapter);
         //Creating infoButton listener
@@ -32,6 +33,7 @@ public class CreateFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 pager.setCurrentItem(0);
+                Log.d("CreateFragment","Info button is clicked.");
             }
         });
         //Creating settingsButton listener
@@ -48,8 +50,8 @@ public class CreateFragment extends Fragment {
 
     private static class CreatePagerAdapter extends FragmentPagerAdapter {
 
-        public CreatePagerAdapter(@NonNull FragmentManager fm, int behavior) {
-            super(fm, behavior);
+        public CreatePagerAdapter(@NonNull FragmentManager fm) {
+            super(fm);
         }
 
         @Override
@@ -69,9 +71,5 @@ public class CreateFragment extends Fragment {
             return null;
         }
 
-        @Override
-        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-            return false;
-        }
     }
 }
