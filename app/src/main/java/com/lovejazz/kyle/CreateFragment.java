@@ -16,6 +16,8 @@ import android.widget.Button;
 import java.util.Objects;
 
 public class CreateFragment extends Fragment {
+    private boolean infoBtnActive = true;
+    private boolean settingsBtnActive = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -25,22 +27,37 @@ public class CreateFragment extends Fragment {
         final CreatePagerAdapter createPagerAdapter = new CreatePagerAdapter(Objects.requireNonNull(getChildFragmentManager()));
         final NonSwipeableViewPager pager = RootView.findViewById(R.id.create_pager);
         pager.setAdapter(createPagerAdapter);
-
         //Creating infoButton listener
-        Button infoBtn = RootView.findViewById(R.id.button_info);
+        final Button infoBtn = RootView.findViewById(R.id.button_info);
+        final Button settingsButton = RootView.findViewById(R.id.button_settings);
         infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pager.setCurrentItem(0);
-                Log.d("CreateFragment","Info button is clicked.");
+                Log.d("CreateFragment", "Info button is clicked.");
+                if (!infoBtnActive) {
+                    infoBtn.setBackgroundResource(R.drawable.info_tab_btn);
+                    infoBtn.setTextColor(getResources().getColor(R.color.full_white));
+                    settingsButton.setBackgroundResource(R.drawable.settings_tab_btn);
+                    settingsButton.setTextColor(getResources().getColor(R.color.dark_grey));
+                    infoBtnActive = true;
+                    settingsBtnActive = false;
+                }
             }
         });
         //Creating settingsButton listener
-        Button settingsButton = RootView.findViewById(R.id.button_settings);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pager.setCurrentItem(1);
+                if (!settingsBtnActive) {
+                    settingsButton.setBackgroundResource(R.drawable.settings_tab_btn_active);
+                    settingsButton.setTextColor(getResources().getColor(R.color.full_white));
+                    infoBtn.setBackgroundResource(R.drawable.info_tab_btn_inactive);
+                    infoBtn.setTextColor(getResources().getColor(R.color.dark_grey));
+                    settingsBtnActive = true;
+                    infoBtnActive = false;
+                }
             }
         });
         return RootView;

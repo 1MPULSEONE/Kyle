@@ -62,7 +62,7 @@
             android:fontFamily="sans-serif-black"
             android:text="@string/settings_tab"
             android:textAllCaps="false"
-            android:textColor="@color/color_grey"
+            android:textColor="@color/dark_grey"
             app:layout_constraintBottom_toBottomOf="@+id/button_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
