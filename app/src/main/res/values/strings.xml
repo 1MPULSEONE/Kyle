@@ -16,5 +16,12 @@
     <string name="description_arrow_btn">arrow_btn</string>
     <string name="info">Информация</string>
     <string name="settings_tab">Настройки</string>
-
+    <!--FragmentInformation strings-->
+    <string name="record_title">Название записи</string>
+    <string name="enter_name_of_record">Введите название записи</string>
+    <string name="enter_email_of_record">Введите почту аккаунта</string>
+    <string name="enter_password_of_record">Введите почту аккаунта</string>
+    <string name="email">Адрес почты</string>
+    <string name="password">Пароль</string>
+    <string name="crate_btn">Создать</string>
 </resources>
