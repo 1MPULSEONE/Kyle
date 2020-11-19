@@ -9,8 +9,6 @@ import android.view.MenuItem;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-    //Creating variable for bottomNavigation
-    private MenuItem prevMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
