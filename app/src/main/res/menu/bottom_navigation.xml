@@ -11,7 +11,7 @@
         android:title="@string/create" />
     <item
         android:id="@+id/nav_settings"
-        android:icon="@drawable/settings_icon"
+        android:icon="@drawable/setting_icon"
         android:title="@string/settings" />
 
 </menu>

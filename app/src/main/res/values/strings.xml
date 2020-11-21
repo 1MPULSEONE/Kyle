@@ -24,4 +24,11 @@
     <string name="email">Адрес почты</string>
     <string name="password">Пароль</string>
     <string name="crate_btn">Создать</string>
+    <!--MainActivity strings-->
+    <string name="settings_button">Settings button</string>
+    <string name="folders">Папки</string>
+    <string name="find_button">Find button</string>
+    <!--folder_card.xml strings-->
+    <string name="folder_image">Folder background image</string>
+    <string name="folder_name">Название папки</string>
 </resources>
