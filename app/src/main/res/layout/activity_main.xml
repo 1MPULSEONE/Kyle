@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/full_white"
     tools:context=".MainActivity">
 
 
@@ -12,6 +13,8 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:background="@color/full_white"
+        android:contentDescription="@string/settings_button"
+        android:onClick="onSettingsButtonClicked"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,15 +22,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.03"
-        app:srcCompat="@drawable/setting_icon"
-        android:onClick="onSettingsButtonClicked"
-        android:contentDescription="@string/settings_button" />
+        app:srcCompat="@drawable/setting_icon" />
 
     <ImageButton
         android:id="@+id/find_button"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:background="@color/full_white"
+        android:contentDescription="@string/find_button"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,33 +37,87 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.03"
-        app:srcCompat="@drawable/find_icon"
-        android:contentDescription="@string/find_button" />
+        app:srcCompat="@drawable/find_icon" />
 
     <TextView
         android:id="@+id/folders_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:fontFamily="@font/montserrat_extrabold"
         android:text="@string/folders"
         android:textColor="@color/black"
         android:textSize="23sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/button_settings"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_settings"
-        app:layout_constraintVertical_bias="0.033" />
+        app:layout_constraintVertical_bias="0.026" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/folder_recycler"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.244"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
         android:scrollbars="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/folders_text" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/folders_text"
+        app:layout_constraintVertical_bias="0.014" />
 
+    <TextView
+        android:id="@+id/credit_cards_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_extrabold"
+        android:text="@string/credit_cards"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/folders_text"
+        app:layout_constraintTop_toBottomOf="@+id/folder_recycler"
+        app:layout_constraintVertical_bias="0.03" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/credit_card_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:scrollbars="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/folder_recycler"
+        app:layout_constraintTop_toBottomOf="@+id/credit_cards_text"
+        app:layout_constraintVertical_bias="0.017" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/montserrat_extrabold"
+        android:text="@string/most_popular"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/credit_cards_text"
+        app:layout_constraintTop_toBottomOf="@+id/credit_card_recycler"
+        app:layout_constraintVertical_bias="0.03" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/account_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

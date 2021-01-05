@@ -28,7 +28,16 @@
     <string name="settings_button">Settings button</string>
     <string name="folders">Папки</string>
     <string name="find_button">Find button</string>
+    <string name="most_popular">Наиболее популярные</string>
+    <string name="credit_cards">Кредитные карточки</string>
     <!--folder_card.xml strings-->
     <string name="folder_image">Folder background image</string>
     <string name="folder_name">Название папки</string>
+    <!--credit_card.xml strings-->
+    <string name="credit_name">Название карты</string>
+    <string name="credit_logo_name">Лого</string>
+    <!--account_card.xml strings-->
+    <string name="account_name">Название</string>
+    <string name="account_login">Логин</string>
+    <string name="account_logo">Лого аккаунта</string>
 </resources>

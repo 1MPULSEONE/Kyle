@@ -38,6 +38,42 @@ public class MainActivity extends AppCompatActivity {
         folderRecycler.setAdapter(folderAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         folderRecycler.setLayoutManager(layoutManager);
+        //Connecting credit card`s RecyclerView
+        RecyclerView creditRecycler = findViewById(R.id.credit_card_recycler);
+        String[] creditsName = new String[CreditCard.creditCards.length];
+        for (int i = 0; i < creditsName.length; i++) {
+            creditsName[i] = CreditCard.creditCards[i].getName();
+        }
+        String[] creditsLogoNames = new String[CreditCard.creditCards.length];
+        for (int i = 0; i < creditsName.length; i++) {
+            creditsLogoNames[i] = CreditCard.creditCards[i].getLogoName();
+        }
+        int[] gradientId = new int [CreditCard.creditCards.length];
+        for (int i = 0; i < gradientId.length; i++) {
+            gradientId[i] = CreditCard.creditCards[i].getGradientId();
+        }
+        CreditCardAdapter creditCardAdapter = new CreditCardAdapter(creditsName,creditsLogoNames,gradientId);
+        creditRecycler.setAdapter(creditCardAdapter);
+        LinearLayoutManager cardManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        creditRecycler.setLayoutManager(cardManager);
+        //Connecting credit card`s RecyclerView
+        RecyclerView accountRecycler = findViewById(R.id.account_recycler);
+        String[] accountsName = new String[Account.accounts.length];
+        for (int i = 0; i < accountsName.length; i++) {
+            accountsName[i] = Account.accounts[i].getName();
+        }
+        String[] accountsLogins = new String[Account.accounts.length];
+        for (int i = 0; i < accountsLogins.length; i++) {
+            accountsLogins[i] = Account.accounts[i].getLogin();
+        }
+        int[] imageId = new int [Account.accounts.length];
+        for (int i = 0; i < imageId.length; i++) {
+            imageId[i] = Account.accounts[i].getImageId();
+        }
+        AccountAdapter accountAdapter = new AccountAdapter(accountsName,accountsLogins,imageId);
+        accountRecycler.setAdapter(accountAdapter);
+        LinearLayoutManager accountManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        accountRecycler.setLayoutManager(accountManager);
     }
 
     public void onSettingsButtonClicked(View view) {

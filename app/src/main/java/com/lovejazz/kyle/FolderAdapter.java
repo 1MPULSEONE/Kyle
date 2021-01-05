@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,17 +27,18 @@ class FolderAdapter extends
         this.imageIds = imageIds;
     }
 
-    //This methods is used, when RecycleView requires new ViewHolder object.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.folder_card,parent,false);
+        ConstraintLayout cv = (ConstraintLayout) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.folder_card, parent, false);
         return new ViewHolder(cv);
     }
-    //This method is used, when RecyclerView shows our data.
+
+    //This method is uses, when RecyclerView shows our data.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CardView folderCard = holder.cardView;
+        ConstraintLayout folderCard = holder.cardView;
         ImageView imageView = folderCard.findViewById(R.id.folder_image);
         Drawable backgroundImage = ContextCompat.getDrawable(folderCard.getContext(), imageIds[position]);
         imageView.setImageDrawable(backgroundImage);
@@ -53,8 +55,9 @@ class FolderAdapter extends
     //ViewHolder class, which connect cardView with RecyclerView.
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private CardView cardView;
-        public ViewHolder(CardView card) {
+        private ConstraintLayout cardView;
+
+        public ViewHolder(ConstraintLayout card) {
             super(card);
             cardView = card;
         }
