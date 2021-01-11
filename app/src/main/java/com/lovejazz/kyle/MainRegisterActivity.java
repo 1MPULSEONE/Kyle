@@ -7,31 +7,34 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import java.util.Objects;
+
 public class MainRegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_register);
         //Deleting toolbar
         try {
-            this.getSupportActionBar().hide();
+            Objects.requireNonNull(this.getSupportActionBar()).hide();
         } catch (NullPointerException e){
             Log.d("MainRegisterActivity","Toolbar produced null pointer exception");
         }
-        setContentView(R.layout.activity_main_register);
     }
 
-    //If login button is clicked
+    //Login button is clicked
     public void onLoginButtonClicked(View view) {
 
     }
 
-    //If register button is clicked
+    //Register button is clicked
     public void onRegisterButtonClicked(View view) {
-
+        Intent registrationIntent = new Intent(MainRegisterActivity.this,RegistrationActivity.class);
+        startActivity(registrationIntent);
     }
 
-    //If user want to use app without registration
+    //User want to use app without registration
     public void onTextAccountClicked (View view) {
         Intent intent = new Intent(MainRegisterActivity.this,MainActivity.class);
         startActivity(intent);

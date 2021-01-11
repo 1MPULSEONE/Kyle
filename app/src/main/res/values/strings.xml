@@ -40,4 +40,17 @@
     <string name="account_name">Название</string>
     <string name="account_login">Логин</string>
     <string name="account_logo">Лого аккаунта</string>
+    <!--activity_registration.xml-->
+    <string name="welcome">Добро пожаловать</string>
+    <string name="add_btn">Create button</string>
+    <string name="login_name">Логин</string>
+    <string name="email_name">Email</string>
+    <string name="password_text">Пароль</string>
+    <string name="repeat_password_text">Повторите пароль</string>
+    <string name="create_text">Создать</string>
+    <string name="register_btn">Register</string>
+    <string name="google_btn">Google button</string>
+    <string name="twitter_btn">Twitter button</string>
+    <string name="facebook_btn">Facebook button</string>
+    <string name="log_into_an_existing_account"><u>Войти в существующий аккаунт</u></string>
 </resources>

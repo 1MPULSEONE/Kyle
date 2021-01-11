@@ -7,4 +7,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="EditTextRegistration">
+        <!-- Used for the bottom line when not selected / focused -->
+        <item name="colorControlNormal">@color/full_white</item>
+        <!-- colorControlActivated & colorControlHighlight use the colorAccent color by default -->
+    </style>
 </resources>
