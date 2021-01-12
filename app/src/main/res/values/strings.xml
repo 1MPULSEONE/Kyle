@@ -53,4 +53,9 @@
     <string name="twitter_btn">Twitter button</string>
     <string name="facebook_btn">Facebook button</string>
     <string name="log_into_an_existing_account"><u>Войти в существующий аккаунт</u></string>
+    <!--activity_login.xml-->
+    <string name="happy_to_see_you">Рады вас видеть</string>
+    <string name="login_text">Войти</string>
+    <string name="register_text"><u>Зарегистрироваться</u></string>
+    <string name="forgot_password"><u>Забыли пароль?</u></string>
 </resources>

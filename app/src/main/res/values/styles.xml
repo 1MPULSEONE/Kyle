@@ -12,4 +12,10 @@
         <item name="colorControlNormal">@color/full_white</item>
         <!-- colorControlActivated & colorControlHighlight use the colorAccent color by default -->
     </style>
+
+    <style name="EditTextLogin">
+        <!-- Used for the bottom line when not selected / focused -->
+        <item name="colorControlNormal">@color/entry_grey</item>
+        <!-- colorControlActivated & colorControlHighlight use the colorAccent color by default -->
+    </style>
 </resources>
