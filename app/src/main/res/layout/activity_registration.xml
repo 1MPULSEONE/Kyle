@@ -7,6 +7,21 @@
     android:background="@drawable/registration_background"
     tools:context=".RegistrationActivity">
 
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@null"
+        android:contentDescription="@string/arrow_icon"
+        android:onClick="onArrowButtonClicked"
+        android:scaleType="centerCrop"
+        android:src="@drawable/white_arrow_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.043" />
+
     <TextView
         android:id="@+id/title_welcome"
         android:layout_width="270dp"
@@ -114,6 +129,7 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:background="@null"
+        android:contentDescription="@string/register_btn"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/repeat_password_entry"
@@ -121,14 +137,14 @@
         app:layout_constraintStart_toEndOf="@+id/create_text"
         app:layout_constraintTop_toBottomOf="@+id/repeat_password_entry"
         app:layout_constraintVertical_bias="0.101"
-        app:srcCompat="@drawable/go_btn"
-        android:contentDescription="@string/register_btn" />
+        app:srcCompat="@drawable/go_btn" />
 
     <ImageButton
         android:id="@+id/google_btn"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:background="@null"
+        android:contentDescription="@string/google_btn"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -136,8 +152,7 @@
         app:layout_constraintStart_toStartOf="@+id/create_text"
         app:layout_constraintTop_toBottomOf="@+id/create_text"
         app:layout_constraintVertical_bias="0.273"
-        app:srcCompat="@drawable/google_btn"
-        android:contentDescription="@string/google_btn" />
+        app:srcCompat="@drawable/google_btn" />
 
     <ImageButton
         android:id="@+id/twitter_btn"
@@ -168,6 +183,7 @@
         app:srcCompat="@drawable/facebook_btn" />
 
     <TextView
+        android:onClick="onLoginTextClicked"
         android:id="@+id/login_with_acc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

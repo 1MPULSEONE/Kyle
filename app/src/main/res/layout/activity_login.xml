@@ -5,6 +5,21 @@
     android:layout_height="match_parent"
     android:background="@drawable/login_background">
 
+    <ImageButton
+        android:layout_width="20dp"
+        android:layout_height="25dp"
+        android:onClick="onArrowButtonClicked"
+        android:background="@null"
+        android:contentDescription="@string/arrow_icon"
+        android:scaleType="centerCrop"
+        android:src="@drawable/white_arrow_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.043" />
+
     <TextView
         android:id="@+id/title_welcome"
         android:layout_width="250dp"
@@ -131,6 +146,7 @@
         app:srcCompat="@drawable/facebook_btn" />
 
     <TextView
+        android:onClick="onRegisterTextClicked"
         android:id="@+id/register_acc_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

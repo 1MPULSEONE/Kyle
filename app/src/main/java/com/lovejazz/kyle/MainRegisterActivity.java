@@ -35,9 +35,11 @@ public class MainRegisterActivity extends AppCompatActivity {
         startActivity(registrationIntent);
     }
 
+
     //User want to use app without registration
     public void onTextAccountClicked(View view) {
         Intent intent = new Intent(MainRegisterActivity.this, MainActivity.class);
         startActivity(intent);
     }
+
 }
