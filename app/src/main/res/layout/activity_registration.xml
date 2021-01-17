@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_registration"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/registration_background"
@@ -130,6 +131,7 @@
         android:layout_height="75dp"
         android:background="@null"
         android:contentDescription="@string/register_btn"
+        android:onClick="onRegistrationButtonClicked"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/repeat_password_entry"
@@ -183,11 +185,11 @@
         app:srcCompat="@drawable/facebook_btn" />
 
     <TextView
-        android:onClick="onLoginTextClicked"
         android:id="@+id/login_with_acc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_medium"
+        android:onClick="onLoginTextClicked"
         android:text="@string/log_into_an_existing_account"
         android:textColor="@color/full_white"
         android:textSize="16sp"

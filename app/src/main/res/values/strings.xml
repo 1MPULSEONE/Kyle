@@ -40,7 +40,7 @@
     <string name="account_name">Название</string>
     <string name="account_login">Логин</string>
     <string name="account_logo">Лого аккаунта</string>
-    <!--activity_registration.xml-->
+    <!--activity_registration.xml strings -->
     <string name="welcome">Добро пожаловать</string>
     <string name="add_btn">Create button</string>
     <string name="login_name">Логин</string>
@@ -53,10 +53,19 @@
     <string name="twitter_btn">Twitter button</string>
     <string name="facebook_btn">Facebook button</string>
     <string name="log_into_an_existing_account"><u>Войти в существующий аккаунт</u></string>
-    <!--activity_login.xml-->
+    <!--activity_login.xml strings -->
     <string name="happy_to_see_you">Рады вас видеть</string>
     <string name="login_text">Войти</string>
     <string name="register_text"><u>Зарегистрироваться</u></string>
     <string name="forgot_password"><u>Забыли пароль?</u></string>
     <string name="arrow_icon">Arrow back button</string>
+    <!--Snackbar strings -->
+    <string name="error_empty_fields">Заполните все поля!</string>
+    <string name="error_passwords_dont_equal">Пароли не совпадают!</string>
+    <string name="error_login_length">Логин должен содержать от 5 до 12 символов!</string>
+    <string name="error_password_length">Пароль должен содержать от 6 до 18 символов!</string>
+    <string name="error_email_length">Адрес почты должен содержать от 3 до 254 символов!</string>
+    <string name="error_contains_not_valid_symbols">Поля содержат не поддерживаемые символы!
+    </string>
+    <string name="some_problem_occurred">Возникла непредвиденная ошибка</string>
 </resources>
