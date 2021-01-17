@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "993833326430",
+    "project_id": "kyle-ec562",
+    "storage_bucket": "kyle-ec562.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993833326430:android:e6eb35779cccc36de321cf",
+        "android_client_info": {
+          "package_name": "com.lovejazz.kyle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993833326430-nk7gu8ekhmlfh2fvkopcp49crld2cbf5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDu3V5vnU1U45c_luGKT2O0MypINTfNcs0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993833326430-nk7gu8ekhmlfh2fvkopcp49crld2cbf5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
