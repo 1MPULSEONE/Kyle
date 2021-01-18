@@ -91,7 +91,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     .show();
             //Checking if password length is okay
         } else if (passwordEntry.getText().toString().length() > 18 || passwordEntry.getText().
-                toString().length() < 6) {
+                toString().length() < 8) {
             Snackbar
                     .make(
                             findViewById(R.id.activity_registration),
@@ -114,11 +114,31 @@ public class RegistrationActivity extends AppCompatActivity {
                     .setBackgroundTint(getResources().getColor(R.color.red))
                     .show();
             //Checking if text in fields are valid
-        } else if (!isValid(emailEntry.getText().toString())) {
+        } else if (!isValidEmail(emailEntry.getText().toString())) {
+            Snackbar
+                    .make(
+                            findViewById(R.id.activity_registration),
+                            getString(R.string.email_error_contains_not_valid_symbols),
+                            Snackbar.LENGTH_LONG
+                    )
+                    .setTextColor(getResources().getColor(R.color.full_white))
+                    .setBackgroundTint(getResources().getColor(R.color.red))
+                    .show();
+        } else if (!isValidLogin(loginEntry.getText().toString())) {
             Snackbar
                     .make(
                             findViewById(R.id.activity_registration),
                             getString(R.string.error_contains_not_valid_symbols),
+                            Snackbar.LENGTH_LONG
+                    )
+                    .setTextColor(getResources().getColor(R.color.full_white))
+                    .setBackgroundTint(getResources().getColor(R.color.red))
+                    .show();
+        } else if (!isValidPassword(passwordEntry.getText().toString())) {
+            Snackbar
+                    .make(
+                            findViewById(R.id.activity_registration),
+                            getString(R.string.not_valid_password),
                             Snackbar.LENGTH_LONG
                     )
                     .setTextColor(getResources().getColor(R.color.full_white))
@@ -178,12 +198,26 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     //Checking if user`s entry text is valid
-    private static boolean isValid(String text) {
-        String textRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
+    private static boolean isValidEmail(String text) {
+        String textRegex = "[^@ \\t\\r\\n]+@[^@ \\t\\r\\n]+\\.[^@ \\t\\r\\n]+";
+        Pattern pat = Pattern.compile(textRegex);
+        if (text == null)
+            return false;
+        return pat.matcher(text).matches();
+    }
 
+    //Checking if user`s entry text is valid
+    private static boolean isValidLogin(String text) {
+        String textRegex = "^[a-z0-9_-]{5,12}$";
+        Pattern pat = Pattern.compile(textRegex);
+        if (text == null)
+            return false;
+        return pat.matcher(text).matches();
+    }
+
+    //Checking if user`s entry text is valid
+    private static boolean isValidPassword(String text) {
+        String textRegex = "^(?=.*?[A-Z])(?=.*?[a-z]).{8,18}$";
         Pattern pat = Pattern.compile(textRegex);
         if (text == null)
             return false;

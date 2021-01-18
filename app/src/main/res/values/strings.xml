@@ -63,9 +63,14 @@
     <string name="error_empty_fields">Заполните все поля!</string>
     <string name="error_passwords_dont_equal">Пароли не совпадают!</string>
     <string name="error_login_length">Логин должен содержать от 5 до 12 символов!</string>
-    <string name="error_password_length">Пароль должен содержать от 6 до 18 символов!</string>
+    <string name="error_password_length">Пароль должен содержать от 8 до 18 символов!</string>
     <string name="error_email_length">Адрес почты должен содержать от 3 до 254 символов!</string>
-    <string name="error_contains_not_valid_symbols">Поля содержат не поддерживаемые символы!
+    <string name="email_error_contains_not_valid_symbols">Введите действительную почту!
     </string>
-    <string name="some_problem_occurred">Возникла непредвиденная ошибка</string>
+    <string name="error_contains_not_valid_symbols">Логин содержит не поддерживаемые символы!
+    </string>
+    <string name="some_problem_occurred">Возникла непредвиденная ошибка!</string>
+    <string name="not_valid_password">Пароль должен содержать как минимум одини символ
+        верхнего регистра!
+    </string>
 </resources>
