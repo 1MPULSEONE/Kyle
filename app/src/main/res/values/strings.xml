@@ -73,4 +73,8 @@
     <string name="not_valid_password">Пароль должен содержать как минимум одини символ
         верхнего регистра!
     </string>
+    <string name="user_with_this_email_already_exist">Пользователь с такой почтой уже существует!
+    </string>
+    <string name="user_with_this_login_already_exist">Пользователь с таким логином уже существует!
+    </string>
 </resources>

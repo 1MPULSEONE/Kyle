@@ -17,8 +17,11 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +32,13 @@ public class RegistrationActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseFirestore fstore;
     String userID;
+    private boolean userWithLoginOrEmailAlreadyExist;
+    private EditText loginEntry;
+    private EditText emailEntry;
+    private EditText passwordEntry;
+
+    public RegistrationActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +57,11 @@ public class RegistrationActivity extends AppCompatActivity {
     //Registration button is clicked
     public void onRegistrationButtonClicked(View view) {
         //Remembering all registration fields
-        final EditText loginEntry = findViewById(R.id.login_entry);
-        final EditText emailEntry = findViewById(R.id.email_entry);
-        EditText passwordEntry = findViewById(R.id.password_entry);
+        loginEntry = findViewById(R.id.login_entry);
+        emailEntry = findViewById(R.id.email_entry);
+        passwordEntry = findViewById(R.id.password_entry);
         EditText repeatPasswordEntry = findViewById(R.id.repeat_password_entry);
+        userWithLoginOrEmailAlreadyExist = false;
         fstore = FirebaseFirestore.getInstance();
         //Checking if empty fields exist
         if (loginEntry.getText().toString().equals("") || emailEntry.getText().toString().
@@ -145,43 +156,14 @@ public class RegistrationActivity extends AppCompatActivity {
                     .setBackgroundTint(getResources().getColor(R.color.red))
                     .show();
         } else {
-            mAuth.createUserWithEmailAndPassword(emailEntry.getText().toString(), passwordEntry
-                    .getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-                    DocumentReference documentReference = fstore.collection("users")
-                            .document(userID);
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("nickname", loginEntry.getText().toString());
-                    user.put("email", emailEntry.getText().toString());
-                    user.put("id", userID);
-                    documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            fstore.collection("users")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("Registration", "Document is created");
-                            Intent intent = new Intent(RegistrationActivity.this,
-                                    MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            checkIfUserWithEmailOrLoginExist(task);
                         }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Snackbar
-                                            .make(
-                                                    findViewById(R.id.activity_registration),
-                                                    getString(R.string.some_problem_occurred),
-                                                    Snackbar.LENGTH_LONG
-                                            )
-                                            .setTextColor(getResources().getColor(R.color.white))
-                                            .setBackgroundTint(getResources().getColor(R.color.red))
-                                            .show();
-                                }
-                            });
-                }
-            });
+                    });
         }
     }
 
@@ -224,4 +206,87 @@ public class RegistrationActivity extends AppCompatActivity {
         return pat.matcher(text).matches();
     }
 
+    private void checkIfUserWithEmailOrLoginExist (@NonNull Task<QuerySnapshot> task) {
+        if (task.isSuccessful()) {
+            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                if (emailEntry.getText().toString().equals(document.getString(
+                        "email"))) {
+                    Snackbar
+                            .make(
+                                    findViewById(R.id.activity_registration),
+                                    getString(R.string
+                                            .user_with_this_email_already_exist)
+                                    ,
+                                    Snackbar.LENGTH_LONG
+                            )
+                            .setTextColor(getResources().getColor(R.color.
+                                    full_white))
+                            .setBackgroundTint(getResources().getColor(R.color
+                                    .red))
+                            .show();
+                } else if (loginEntry.getText().toString().equals(document.
+                        getString("nickname"))) {
+                    Snackbar
+                            .make(
+                                    findViewById(R.id.activity_registration),
+                                    getString(R.string
+                                            .user_with_this_login_already_exist)
+                                    ,
+                                    Snackbar.LENGTH_LONG
+                            )
+                            .setTextColor(getResources().getColor(R.color.
+                                    full_white))
+                            .setBackgroundTint(getResources().getColor(R.color
+                                    .red))
+                            .show();
+                } else {
+                    mAuth.createUserWithEmailAndPassword(emailEntry.getText().toString(), passwordEntry
+                            .getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                userID = mAuth.getCurrentUser().getUid();
+                                DocumentReference documentReference = fstore.collection("users")
+                                        .document(userID);
+                                Map<String, Object> user = new HashMap<>();
+                                user.put("nickname", loginEntry.getText().toString());
+                                user.put("email", emailEntry.getText().toString());
+                                user.put("id", userID);
+                                documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("Registration", "Document is created");
+                                        Intent intent = new Intent(RegistrationActivity.this,
+                                                MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Snackbar
+                                                        .make(
+                                                                findViewById(R.id.activity_registration),
+                                                                getString(R.string.some_problem_occurred),
+                                                                Snackbar.LENGTH_LONG
+                                                        )
+                                                        .setTextColor(getResources().getColor(R.color.white))
+                                                        .setBackgroundTint(getResources().getColor(R.color.red))
+                                                        .show();
+                                                Log.d("Registration", "Document isn`t created");
+                                            }
+                                        });
+                            } else {
+                                Log.d("Registration", task.getException().toString());
+                            }
+                        }
+                    });
+                }
+            }
+        } else {
+            Log.d("Registration",task.getException().toString());
+        }
+    }
 }
