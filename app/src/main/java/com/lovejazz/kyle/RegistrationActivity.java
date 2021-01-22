@@ -167,7 +167,6 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    //Arrow button is clicked
     public void onArrowButtonClicked(View view) {
         Intent backIntent = new Intent(RegistrationActivity.this, MainRegisterActivity.class);
         startActivity(backIntent);
@@ -206,7 +205,7 @@ public class RegistrationActivity extends AppCompatActivity {
         return pat.matcher(text).matches();
     }
 
-    private void checkIfUserWithEmailOrLoginExist (@NonNull Task<QuerySnapshot> task) {
+    private void checkIfUserWithEmailOrLoginExist(@NonNull Task<QuerySnapshot> task) {
         if (task.isSuccessful()) {
             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                 if (emailEntry.getText().toString().equals(document.getString(
@@ -286,7 +285,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Log.d("Registration",task.getException().toString());
+            Log.d("Registration", task.getException().toString());
         }
     }
 }
