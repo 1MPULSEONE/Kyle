@@ -5,10 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -177,7 +173,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     //Checking if user`s entry text is valid
     private static boolean isValidLogin(String text) {
-        String textRegex = "^[a-z0-9_-]{5,12}$";
+        String textRegex = "^[a-zA-Z0-9]{5,12}$";
         Pattern pat = Pattern.compile(textRegex);
         if (text == null)
             return false;
@@ -235,7 +231,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                userID = mAuth.getCurrentUser().getUid();
+                                userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
                                 DocumentReference documentReference = fstore.collection("users")
                                         .document(userID);
                                 Map<String, Object> user = new HashMap<>();
@@ -271,7 +267,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                             }
                                         });
                             } else {
-                                Log.d("Registration", task.getException().toString());
+                                Log.d("Registration", Objects.requireNonNull(task.getException()).toString());
                             }
                             loadingDialog.dismissDialog();
                         }
@@ -283,5 +279,3 @@ public class RegistrationActivity extends AppCompatActivity {
         Log.d(TAG, "LoadingDialog dismissed");
     }
 }
-
-//    }
