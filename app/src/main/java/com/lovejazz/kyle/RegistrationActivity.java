@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -32,13 +36,12 @@ public class RegistrationActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseFirestore fstore;
     String userID;
-    private boolean userWithLoginOrEmailAlreadyExist;
     private EditText loginEntry;
     private EditText emailEntry;
     private EditText passwordEntry;
+    private LoadingDialog loadingDialog;
 
-    public RegistrationActivity() {
-    }
+    private static final String TAG = "RegistrationActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,108 +63,41 @@ public class RegistrationActivity extends AppCompatActivity {
         loginEntry = findViewById(R.id.login_entry);
         emailEntry = findViewById(R.id.email_entry);
         passwordEntry = findViewById(R.id.password_entry);
+
         EditText repeatPasswordEntry = findViewById(R.id.repeat_password_entry);
-        userWithLoginOrEmailAlreadyExist = false;
+
+        //initializing loading dialog
+        loadingDialog = new LoadingDialog(RegistrationActivity.this);
         fstore = FirebaseFirestore.getInstance();
         //Checking if empty fields exist
-        if (loginEntry.getText().toString().equals("") || emailEntry.getText().toString().
-                equals("") || passwordEntry.getText().toString().equals("") || repeatPasswordEntry
-                .getText().toString().equals("")) {
-            Snackbar
-                    .make(
-                            findViewById(R.id.activity_registration),
-                            getString(R.string.error_empty_fields),
-                            Snackbar.LENGTH_LONG
-                    )
-                    .setTextColor(getResources().getColor(R.color.full_white))
-                    .setBackgroundTint(getResources().getColor(R.color.red))
-                    .show();
+        if (checkAllFieldsAreFilled(loginEntry, emailEntry, passwordEntry, repeatPasswordEntry)) {
+            makeSnackbarError(getString(R.string.error_empty_fields));
             //Checking if password equals repeated password
-        } else if (!passwordEntry.getText().toString().equals(repeatPasswordEntry.getText().
-                toString())) {
-            Snackbar
-                    .make(
-                            findViewById(R.id.activity_registration),
-                            getString(R.string.error_passwords_dont_equal),
-                            Snackbar.LENGTH_LONG
-                    )
-                    .setTextColor(getResources().getColor(R.color.full_white))
-                    .setBackgroundTint(getResources().getColor(R.color.red))
-                    .show();
+        } else if (checkIfPasswordEqual(passwordEntry, repeatPasswordEntry)) {
+            makeSnackbarError(getString(R.string.error_passwords_dont_equal));
             //Checking if login length is okay
-        } else if (loginEntry.getText().toString().length() > 12 || loginEntry.getText().toString()
-                .length() < 5) {
-            Snackbar
-                    .make(
-                            findViewById(R.id.activity_registration),
-                            getString(R.string.error_login_length),
-                            Snackbar.LENGTH_LONG
-                    )
-                    .setTextColor(getResources().getColor(R.color.full_white))
-                    .setBackgroundTint(getResources().getColor(R.color.red))
-                    .show();
+        } else if (checkLoginLength(loginEntry)) {
+            makeSnackbarError(getString(R.string.error_login_length));
             //Checking if password length is okay
-        } else if (passwordEntry.getText().toString().length() > 18 || passwordEntry.getText().
-                toString().length() < 8) {
-            Snackbar
-                    .make(
-                            findViewById(R.id.activity_registration),
-                            getString(R.string.error_password_length),
-                            Snackbar.LENGTH_LONG
-                    )
-                    .setTextColor(getResources().getColor(R.color.full_white))
-                    .setBackgroundTint(getResources().getColor(R.color.red))
-                    .show();
+        } else if (checkPasswordLength(passwordEntry)) {
+            makeSnackbarError(getString(R.string.error_password_length));
             //Checking if email length is okay
-        } else if (emailEntry.getText().toString().length() > 254 || emailEntry.getText().
-                toString().length() < 3) {
-            Snackbar
-                    .make(
-                            findViewById(R.id.activity_registration),
-                            getString(R.string.error_password_length),
-                            Snackbar.LENGTH_LONG
-                    )
-                    .setTextColor(getResources().getColor(R.color.full_white))
-                    .setBackgroundTint(getResources().getColor(R.color.red))
-                    .show();
+        } else if (checkEmailLength(emailEntry)) {
+            makeSnackbarError(getString(R.string.error_email_length));
             //Checking if text in fields are valid
-        } else if (!isValidEmail(emailEntry.getText().toString())) {
-            Snackbar
-                    .make(
-                            findViewById(R.id.activity_registration),
-                            getString(R.string.email_error_contains_not_valid_symbols),
-                            Snackbar.LENGTH_LONG
-                    )
-                    .setTextColor(getResources().getColor(R.color.full_white))
-                    .setBackgroundTint(getResources().getColor(R.color.red))
-                    .show();
-        } else if (!isValidLogin(loginEntry.getText().toString())) {
-            Snackbar
-                    .make(
-                            findViewById(R.id.activity_registration),
-                            getString(R.string.error_contains_not_valid_symbols),
-                            Snackbar.LENGTH_LONG
-                    )
-                    .setTextColor(getResources().getColor(R.color.full_white))
-                    .setBackgroundTint(getResources().getColor(R.color.red))
-                    .show();
-        } else if (!isValidPassword(passwordEntry.getText().toString())) {
-            Snackbar
-                    .make(
-                            findViewById(R.id.activity_registration),
-                            getString(R.string.not_valid_password),
-                            Snackbar.LENGTH_LONG
-                    )
-                    .setTextColor(getResources().getColor(R.color.full_white))
-                    .setBackgroundTint(getResources().getColor(R.color.red))
-                    .show();
+        } else if (checkEmailValid(emailEntry)) {
+            makeSnackbarError(getString(R.string.error_contains_not_valid_symbols));
+        } else if (checkLoginValid(loginEntry)) {
+            makeSnackbarError(getString(R.string.email_error_contains_not_valid_symbols));
+        } else if (checkPasswordValid(passwordEntry)) {
+            makeSnackbarError(getString(R.string.not_valid_password));
         } else {
             fstore.collection("users")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            checkIfUserWithEmailOrLoginExist(task);
+                        public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+                            createUser(task);
                         }
                     });
         }
@@ -176,6 +112,58 @@ public class RegistrationActivity extends AppCompatActivity {
     public void onLoginTextClicked(View view) {
         Intent loginIntent = new Intent(RegistrationActivity.this, LoginActivity.class);
         startActivity(loginIntent);
+    }
+
+    private void makeSnackbarError(String error) {
+        Snackbar
+                .make(
+                        findViewById(R.id.activity_registration),
+                        error,
+                        Snackbar.LENGTH_LONG
+                )
+                .setTextColor(getResources().getColor(R.color.full_white))
+                .setBackgroundTint(getResources().getColor(R.color.red))
+                .show();
+    }
+
+    private boolean checkAllFieldsAreFilled(EditText loginEntry, EditText emailEntry, EditText
+            passwordEntry, EditText passwordRepeatEntry) {
+        return (loginEntry.getText().toString().equals("") || emailEntry.getText().toString().
+                equals("") || passwordEntry.getText().toString().equals("") || passwordRepeatEntry
+                .getText().toString().equals(""));
+    }
+
+
+    private boolean checkIfPasswordEqual(EditText passwordEntry, EditText passwordRepeatEntry) {
+        return !passwordEntry.getText().toString().equals(passwordRepeatEntry.getText().
+                toString());
+    }
+
+    private boolean checkLoginLength(EditText loginEntry) {
+        return loginEntry.getText().toString().length() > 12 || loginEntry.getText().toString()
+                .length() < 5;
+    }
+
+    private boolean checkPasswordLength(EditText passwordEntry) {
+        return passwordEntry.getText().toString().length() > 18 || passwordEntry.getText().
+                toString().length() < 8;
+    }
+
+    private boolean checkEmailLength(EditText emailEntry) {
+        return emailEntry.getText().toString().length() > 254 || emailEntry.getText().
+                toString().length() < 3;
+    }
+
+    private boolean checkEmailValid(EditText emailEntry) {
+        return !isValidEmail(emailEntry.getText().toString());
+    }
+
+    private boolean checkLoginValid(EditText loginEntry) {
+        return !isValidLogin(loginEntry.getText().toString());
+    }
+
+    private boolean checkPasswordValid(EditText passwordEntry) {
+        return !isValidPassword(passwordEntry.getText().toString());
     }
 
     //Checking if user`s entry text is valid
@@ -205,11 +193,12 @@ public class RegistrationActivity extends AppCompatActivity {
         return pat.matcher(text).matches();
     }
 
-    private void checkIfUserWithEmailOrLoginExist(@NonNull Task<QuerySnapshot> task) {
+    private void createUser(@NonNull Task<QuerySnapshot> task) {
+        loadingDialog.startLoadingDialog();
+        Log.d(TAG, "Loading dialog started");
         if (task.isSuccessful()) {
             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                if (emailEntry.getText().toString().equals(document.getString(
-                        "email"))) {
+                if (emailEntry.getText().toString().equals(document.getString("email"))) {
                     Snackbar
                             .make(
                                     findViewById(R.id.activity_registration),
@@ -223,6 +212,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             .setBackgroundTint(getResources().getColor(R.color
                                     .red))
                             .show();
+                    Log.d(TAG, "User with email already exist");
                 } else if (loginEntry.getText().toString().equals(document.
                         getString("nickname"))) {
                     Snackbar
@@ -238,6 +228,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             .setBackgroundTint(getResources().getColor(R.color
                                     .red))
                             .show();
+                    Log.d(TAG, "User with nickname already");
                 } else {
                     mAuth.createUserWithEmailAndPassword(emailEntry.getText().toString(), passwordEntry
                             .getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -251,6 +242,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 user.put("nickname", loginEntry.getText().toString());
                                 user.put("email", emailEntry.getText().toString());
                                 user.put("id", userID);
+                                loadingDialog.dismissDialog();
                                 documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -265,6 +257,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
+                                                loadingDialog.dismissDialog();
                                                 Snackbar
                                                         .make(
                                                                 findViewById(R.id.activity_registration),
@@ -280,12 +273,15 @@ public class RegistrationActivity extends AppCompatActivity {
                             } else {
                                 Log.d("Registration", task.getException().toString());
                             }
+                            loadingDialog.dismissDialog();
                         }
                     });
                 }
             }
-        } else {
-            Log.d("Registration", task.getException().toString());
         }
+
+        Log.d(TAG, "LoadingDialog dismissed");
     }
 }
+
+//    }

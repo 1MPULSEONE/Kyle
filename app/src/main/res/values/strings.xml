@@ -77,4 +77,6 @@
     </string>
     <string name="user_with_this_login_already_exist">Пользователь с таким логином уже существует!
     </string>
+    <!--Dialog strings -->
+    <string name="creating_user">Создаём пользователя</string>
 </resources>
