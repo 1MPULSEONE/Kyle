@@ -182,7 +182,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     //Checking if user`s entry text is valid
     private static boolean isValidPassword(String text) {
-        String textRegex = "^(?=.*?[A-Z])(?=.*?[a-z]).{8,18}$";
+        String textRegex = "^(?=.*?[A-Z]).{8,18}$";
         Pattern pat = Pattern.compile(textRegex);
         if (text == null)
             return false;
