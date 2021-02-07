@@ -77,6 +77,8 @@
     </string>
     <string name="user_with_this_login_already_exist">Пользователь с таким логином уже существует!
     </string>
+    <string name="incorrect_email_or_password_entered">Введена не правильная почта или пароль
+    </string>
     <!--Dialog strings -->
     <string name="creating_user">Создаём пользователя</string>
 </resources>
