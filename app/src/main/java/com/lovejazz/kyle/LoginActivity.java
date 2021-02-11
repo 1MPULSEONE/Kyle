@@ -12,20 +12,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
 public class LoginActivity extends AuthenticationSystem {
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore fstore;
-    private EditText emailEntry;
-    private EditText passwordEntry;
+
     private final int activityID = R.id.login_activity;
 
     private static final String TAG = "LoginActivity";
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +53,8 @@ public class LoginActivity extends AuthenticationSystem {
         emailEntry = findViewById(R.id.email_entry);
         passwordEntry = findViewById(R.id.password_entry);
         fstore = FirebaseFirestore.getInstance();
+        //initializing loading dialog
+        loadingDialog = new LoadingDialog(LoginActivity.this);
         if (allFieldsAreNotFilled(emailEntry, passwordEntry)) {
             makeSnackbarError(getString(R.string.error_empty_fields), activityID);
         } else if (!isValidEmail(emailEntry.getText().toString())) {
@@ -70,6 +68,8 @@ public class LoginActivity extends AuthenticationSystem {
         } else if (checkPasswordLength(passwordEntry)) {
             makeSnackbarError(getString(R.string.error_password_length), activityID);
         } else {
+            loadingDialog.startLoadingDialog();
+            Log.d(TAG,"Loading dialog started");
             singIn(emailEntry.getText().toString(), passwordEntry.getText()
                     .toString());
         }
@@ -84,8 +84,8 @@ public class LoginActivity extends AuthenticationSystem {
         mAuth.signInWithEmailAndPassword(email, password).
                 addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> SingTask) {
-                        if (!SingTask.isSuccessful()) {
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
                             makeSnackbarError(getString(R.string.incorrect_email_or_password_entered),
                                     activityID);
                             Log.d(TAG, "Some problem occurred");
@@ -95,7 +95,10 @@ public class LoginActivity extends AuthenticationSystem {
                                     , MainActivity.class);
                             startActivity(intentToHome);
                         }
+                        loadingDialog.dismissDialog();
+                        Log.d(TAG,"Loading dialog dismissed");
                     }
                 });
+
     }
 }

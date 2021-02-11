@@ -5,12 +5,18 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.regex.Pattern;
 
-public abstract class AuthenticationSystem extends AppCompatActivity {
+public class AuthenticationSystem extends AppCompatActivity {
+    EditText emailEntry;
+    EditText passwordEntry;
+    FirebaseAuth mAuth;
+    FirebaseFirestore fstore;
 
-    void makeSnackbarError(String error,int activityId) {
+    void makeSnackbarError(String error, int activityId) {
         Snackbar
                 .make(
                         findViewById(activityId),

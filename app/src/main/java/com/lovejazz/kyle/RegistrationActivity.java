@@ -25,12 +25,8 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class RegistrationActivity extends AuthenticationSystem {
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore fstore;
     String userID;
     private EditText loginEntry;
-    private EditText emailEntry;
-    private EditText passwordEntry;
     private LoadingDialog loadingDialog;
     private final int activityID = R.id.activity_registration;
 
@@ -87,6 +83,7 @@ public class RegistrationActivity extends AuthenticationSystem {
             makeSnackbarError(getString(R.string.not_valid_password),
                     activityID);
         } else {
+            loadingDialog.startLoadingDialog();
             fstore.collection("users")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -120,7 +117,7 @@ public class RegistrationActivity extends AuthenticationSystem {
 
 
     private boolean checkIfPasswordEqual(EditText passwordEntry, EditText passwordRepeatEntry) {
-        return !passwordEntry.getText().toString().equals(passwordRepeatEntry.getText().
+        return passwordEntry.getText().toString().equals(passwordRepeatEntry.getText().
                 toString());
     }
 
@@ -138,7 +135,6 @@ public class RegistrationActivity extends AuthenticationSystem {
     }
 
     private void createUser(@NonNull Task<QuerySnapshot> task) {
-        loadingDialog.startLoadingDialog();
         Log.d(TAG, "Loading dialog started");
         if (task.isSuccessful()) {
             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
