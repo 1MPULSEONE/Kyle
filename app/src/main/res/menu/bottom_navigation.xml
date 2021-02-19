@@ -3,15 +3,15 @@
     <item
         android:id="@+id/nav_home"
         android:state_checked="true"
-        android:icon="@drawable/lock_icon"
+        android:icon="@drawable/home_selector"
         android:title="@string/home" />
     <item
         android:id="@+id/nav_create"
-        android:icon="@drawable/create_icon"
+        android:icon="@drawable/create_selector"
         android:title="@string/create" />
     <item
         android:id="@+id/nav_settings"
-        android:icon="@drawable/setting_icon"
+        android:icon="@drawable/profile_selector"
         android:title="@string/settings" />
 
 </menu>

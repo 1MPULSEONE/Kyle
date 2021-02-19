@@ -15,16 +15,16 @@ import java.util.Objects;
 public class MainRegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null) {
-//            Intent intentToHome = new Intent(MainRegisterActivity.this,MainActivity.class);
-//            startActivity(intentToHome);
-//        }
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Intent intentToHome = new Intent(MainRegisterActivity.this,MainActivity.class);
+            startActivity(intentToHome);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
