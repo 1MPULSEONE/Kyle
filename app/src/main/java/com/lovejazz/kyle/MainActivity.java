@@ -2,18 +2,17 @@ package com.lovejazz.kyle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private MenuItem prevMenuItem;
@@ -21,12 +20,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Deleting toolbar
-        try {
-            Objects.requireNonNull(this.getSupportActionBar()).hide();
-        } catch (NullPointerException e) {
-            Log.d("MainRegisterActivity", "Toolbar produced null pointer exception");
-        }
         setContentView(R.layout.activity_main);
         //CreatingAdapter for ViewPager
         final SectionsPagerAdapter pagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());

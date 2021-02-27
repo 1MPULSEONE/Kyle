@@ -37,12 +37,6 @@ public class RegistrationActivity extends AuthenticationSystem {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        //Deleting toolbar
-        try {
-            Objects.requireNonNull(this.getSupportActionBar()).hide();
-        } catch (NullPointerException e) {
-            Log.d(TAG, "Toolbar produced null pointer exception");
-        }
         //Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
     }

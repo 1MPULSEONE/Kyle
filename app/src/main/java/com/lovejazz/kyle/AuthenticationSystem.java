@@ -11,8 +11,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.regex.Pattern;
 
 public class AuthenticationSystem extends AppCompatActivity {
-    EditText emailEntry;
-    EditText passwordEntry;
+    protected EditText emailEntry;
+    protected EditText passwordEntry;
     FirebaseAuth mAuth;
     FirebaseFirestore fstore;
 

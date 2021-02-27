@@ -14,8 +14,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Objects;
-
 public class LoginActivity extends AuthenticationSystem {
 
     private final int activityID = R.id.login_activity;
@@ -27,12 +25,6 @@ public class LoginActivity extends AuthenticationSystem {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //Deleting toolbar
-        try {
-            Objects.requireNonNull(this.getSupportActionBar()).hide();
-        } catch (NullPointerException e) {
-            Log.d(TAG, "Toolbar produced null pointer exception");
-        }
         //Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
     }
@@ -69,7 +61,7 @@ public class LoginActivity extends AuthenticationSystem {
             makeSnackbarError(getString(R.string.error_password_length), activityID);
         } else {
             loadingDialog.startLoadingDialog();
-            Log.d(TAG,"Loading dialog started");
+            Log.d(TAG, "Loading dialog started");
             singIn(emailEntry.getText().toString(), passwordEntry.getText()
                     .toString());
         }
@@ -96,7 +88,7 @@ public class LoginActivity extends AuthenticationSystem {
                             startActivity(intentToHome);
                         }
                         loadingDialog.dismissDialog();
-                        Log.d(TAG,"Loading dialog dismissed");
+                        Log.d(TAG, "Loading dialog dismissed");
                     }
                 });
 
