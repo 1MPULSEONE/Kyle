@@ -24,6 +24,7 @@
     <string name="email">Адрес почты</string>
     <string name="password">Пароль</string>
     <string name="crate_btn">Создать</string>
+    <string name="record_type">Тип записи</string>
     <!--MainActivity strings-->
     <string name="settings_button">Settings button</string>
     <string name="folders">Папки</string>
@@ -82,4 +83,14 @@
     <string name="logging_in_to_your_account">Входим в аккаунт</string>
     <!--Dialog strings -->
     <string name="creating_user">Создаём пользователя</string>
+    <!--Type spinner strings -->
+    <string-array name="type_spinner">
+        <item>Электронная почта</item>
+        <item>Социальные сети</item>
+        <item>Путешествия</item>
+        <item>Творчество</item>
+        <item>Работа</item>
+        <item>Развлечения</item>
+        <item>Обучение</item>
+    </string-array>
 </resources>

@@ -7,6 +7,40 @@
     tools:context=".InformationFragment">
 
     <TextView
+        android:id="@+id/record_type_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/record_type"
+        android:textColor="@color/light_grey"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.03" />
+
+    <Spinner
+        android:id="@+id/type_spinner"
+        android:layout_width="340dp"
+        android:layout_height="40dp"
+        android:background="@drawable/spinner_background"
+        android:ems="19"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/light_grey"
+        android:textColorHint="@color/dark_grey"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/record_name_entry"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/record_name_entry"
+        app:layout_constraintTop_toBottomOf="@+id/record_type_name"
+        app:layout_constraintVertical_bias="0.02" />
+
+    <TextView
         android:id="@+id/record_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,32 +51,32 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.132"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.030" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/record_type_name"
+        app:layout_constraintTop_toBottomOf="@+id/type_spinner"
+        app:layout_constraintVertical_bias="0.02" />
 
     <EditText
         android:id="@+id/record_name_entry"
-        android:layout_width="wrap_content"
+        android:layout_width="340dp"
         android:layout_height="40dp"
+        android:autofillHints="name of record"
         android:background="@drawable/entry_background"
         android:ems="19"
-        android:hint="@string/enter_name_of_record"
         android:fontFamily="sans-serif"
-        android:padding="8dp"
+        android:hint="@string/enter_name_of_record"
+        android:inputType="text"
+        android:padding="10dp"
         android:textColor="@color/dark_grey"
+        android:textColorHint="@color/dark_grey"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:textColorHint="@color/dark_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/record_name_text"
         app:layout_constraintTop_toBottomOf="@+id/record_name_text"
-        app:layout_constraintVertical_bias="0.017"
-        android:autofillHints="name of record"
-        android:inputType="text"/>
+        app:layout_constraintVertical_bias="0.02" />
 
     <TextView
         android:id="@+id/email_entry"
@@ -55,18 +89,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/record_name_entry"
+        app:layout_constraintStart_toStartOf="@+id/record_name_text"
         app:layout_constraintTop_toBottomOf="@+id/record_name_entry"
         app:layout_constraintVertical_bias="0.02" />
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="wrap_content"
+        android:layout_width="340dp"
         android:layout_height="40dp"
         android:background="@drawable/entry_background"
         android:ems="19"
         android:hint="@string/enter_email_of_record"
-        android:padding="8dp"
+        android:padding="10dp"
         android:textColor="@color/dark_grey"
         android:textColorHint="@color/dark_grey"
         android:textSize="15sp"
@@ -76,7 +110,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/email_entry"
         app:layout_constraintTop_toBottomOf="@+id/email_entry"
-        app:layout_constraintVertical_bias="0.017" />
+        app:layout_constraintVertical_bias="0.02" />
 
     <TextView
         android:id="@+id/password_entry"
@@ -89,19 +123,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editText"
+        app:layout_constraintStart_toStartOf="@+id/email_entry"
         app:layout_constraintTop_toBottomOf="@+id/editText"
         app:layout_constraintVertical_bias="0.02" />
 
     <EditText
         android:id="@+id/editTextTextPassword"
-        android:layout_width="wrap_content"
+        android:layout_width="340dp"
         android:layout_height="40dp"
-        android:ems="19"
         android:background="@drawable/entry_background"
-        android:inputType="textPassword"
+        android:ems="19"
         android:hint="@string/enter_password_of_record"
-        android:padding="8dp"
+        android:inputType="textPassword"
+        android:padding="10dp"
         android:textColor="@color/dark_grey"
         android:textColorHint="@color/dark_grey"
         android:textSize="15sp"
@@ -111,7 +145,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/password_entry"
         app:layout_constraintTop_toBottomOf="@+id/password_entry"
-        app:layout_constraintVertical_bias="0.017" />
+        app:layout_constraintVertical_bias="0.02" />
 
     <Button
         android:id="@+id/button"
