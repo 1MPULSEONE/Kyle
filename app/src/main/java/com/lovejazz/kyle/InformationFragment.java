@@ -20,8 +20,8 @@ public class InformationFragment extends Fragment {
                 false);
         Spinner typeSpinner = inflaterView.findViewById(R.id.type_spinner);
         ArrayAdapter<CharSequence> typeSpinnerAdapter = ArrayAdapter.createFromResource(
-                inflaterView.getContext(), R.array.type_spinner,R.layout.spinner_item);
-        typeSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+                inflaterView.getContext(), R.array.type_spinner, R.layout.spinner_item);
+        typeSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         typeSpinner.setAdapter(typeSpinnerAdapter);
         return inflaterView;
     }
