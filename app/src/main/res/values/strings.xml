@@ -93,4 +93,8 @@
         <item>Развлечения</item>
         <item>Обучение</item>
     </string-array>
+    <!--Toolbar strings-->
+    <string name="accounts">Аккаунты</string>
+    <string name="profile">Профиль</string>
+    <string name="create_record">Создание записи</string>
 </resources>

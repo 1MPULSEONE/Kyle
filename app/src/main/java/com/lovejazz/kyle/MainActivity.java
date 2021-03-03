@@ -2,6 +2,7 @@ package com.lovejazz.kyle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -9,8 +10,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -20,6 +24,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Setting toolbar
+        setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        //Creating variable for toolbar title
+        final TextView toolbarTitle = findViewById(R.id.toolbar_title);
+        //Setting default value for toolbar title
+        toolbarTitle.setText(R.string.accounts);
         //CreatingAdapter for ViewPager
         final SectionsPagerAdapter pagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         final ViewPager pager = findViewById(R.id.main_pager);
@@ -33,12 +44,15 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.nav_home:
                         pager.setCurrentItem(0);
+                        toolbarTitle.setText(R.string.accounts);
                         break;
                     case R.id.nav_create:
                         pager.setCurrentItem(1);
+                        toolbarTitle.setText(R.string.create_record);
                         break;
                     case R.id.nav_settings:
                         pager.setCurrentItem(2);
+                        toolbarTitle.setText(R.string.profile);
                 }
                 return false;
             }
@@ -51,6 +65,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+                //Setting title
+                switch (position) {
+                    case 0:
+                        toolbarTitle.setText(R.string.accounts);
+                        break;
+                    case 1:
+                        toolbarTitle.setText(R.string.create_record);
+                        break;
+                    case 2:
+                        toolbarTitle.setText(R.string.profile);
+                        break;
+                }
                 if (prevMenuItem != null) {
                     prevMenuItem.setChecked(false);
                 } else {

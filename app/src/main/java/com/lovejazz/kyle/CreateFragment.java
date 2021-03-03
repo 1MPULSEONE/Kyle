@@ -3,6 +3,7 @@ package com.lovejazz.kyle;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -18,6 +19,7 @@ import java.util.Objects;
 public class CreateFragment extends Fragment {
     private boolean infoBtnActive = true;
     private boolean settingsBtnActive = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -78,7 +80,7 @@ public class CreateFragment extends Fragment {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            switch (position){
+            switch (position) {
                 case 0:
                     return new InformationFragment();
                 case 1:
