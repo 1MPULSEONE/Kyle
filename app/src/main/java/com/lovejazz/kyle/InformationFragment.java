@@ -18,6 +18,7 @@ public class InformationFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflaterView = inflater.inflate(R.layout.fragment_information, container,
                 false);
+        //Creating spinner for fragment to choose categories
         Spinner typeSpinner = inflaterView.findViewById(R.id.type_spinner);
         ArrayAdapter<CharSequence> typeSpinnerAdapter = ArrayAdapter.createFromResource(
                 inflaterView.getContext(), R.array.type_spinner, R.layout.spinner_item);
