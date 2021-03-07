@@ -8,19 +8,19 @@
     tools:context=".CreateFragment">
 
     <TextView
-        android:id="@+id/create_acc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
-        android:text="@string/create_acc"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04000002" />
+            android:id="@+id/create_acc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/proxima_nova_black"
+            android:text="@string/create_acc"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.04000002" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -39,36 +39,36 @@
         app:layout_constraintVertical_bias="0.0">
 
         <Button
-            android:id="@+id/button_info"
-            android:layout_width="170dp"
-            android:layout_height="40dp"
-            android:background="@drawable/info_tab_btn"
-            android:fontFamily="sans-serif-black"
-            android:text="@string/info"
-            android:textAllCaps="false"
-            android:textColor="@color/full_white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.078"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/choose_section"
-            app:layout_constraintVertical_bias="0.031" />
+                android:id="@+id/button_info"
+                android:layout_width="170dp"
+                android:layout_height="40dp"
+                android:background="@drawable/info_tab_btn"
+                android:fontFamily="@font/proxima_nova_black"
+                android:text="@string/info"
+                android:textAllCaps="false"
+                android:textColor="@color/full_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.078"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choose_section"
+                app:layout_constraintVertical_bias="0.031" />
 
         <Button
-            android:id="@+id/button_settings"
-            android:layout_width="170dp"
-            android:layout_height="40dp"
-            android:background="@drawable/settings_tab_btn"
-            android:fontFamily="sans-serif-black"
-            android:text="@string/settings_tab"
-            android:textAllCaps="false"
-            android:textColor="@color/dark_grey"
-            app:layout_constraintBottom_toBottomOf="@+id/button_info"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/button_info"
-            app:layout_constraintTop_toTopOf="@+id/button_info"
-            app:layout_constraintVertical_bias="0.0" />
+                android:id="@+id/button_settings"
+                android:layout_width="170dp"
+                android:layout_height="40dp"
+                android:background="@drawable/settings_tab_btn"
+                android:fontFamily="@font/proxima_nova_black"
+                android:text="@string/settings_tab"
+                android:textAllCaps="false"
+                android:textColor="@color/dark_grey"
+                app:layout_constraintBottom_toBottomOf="@+id/button_info"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/button_info"
+                app:layout_constraintTop_toTopOf="@+id/button_info"
+                app:layout_constraintVertical_bias="0.0" />
     </LinearLayout>
 
     <com.lovejazz.kyle.NonSwipeableViewPager
