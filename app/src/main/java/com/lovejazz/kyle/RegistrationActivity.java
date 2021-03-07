@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+//FIXME 05.03.21
+
 public class RegistrationActivity extends AuthenticationSystem {
     String userID;
     private EditText loginEntry;
@@ -31,6 +33,7 @@ public class RegistrationActivity extends AuthenticationSystem {
     private final int activityID = R.id.activity_registration;
 
     private static final String TAG = "RegistrationActivity";
+
 
 
     @Override
