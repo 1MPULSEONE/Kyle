@@ -1,6 +1,7 @@
 package com.lovejazz.kyle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,16 +25,26 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-//FIXME 05.03.21
+import static com.lovejazz.kyle.EntryUtils.checkEmailLength;
+import static com.lovejazz.kyle.EntryUtils.checkPasswordLength;
+import static com.lovejazz.kyle.EntryUtils.isValidEmail;
+import static com.lovejazz.kyle.EntryUtils.isValidPassword;
+import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
-public class RegistrationActivity extends AuthenticationSystem {
+//TODO Debug registration
+//TODO Write documentation
+
+public class RegistrationActivity extends AppCompatActivity {
     String userID;
     private EditText loginEntry;
     private LoadingDialog loadingDialog;
-    private final int activityID = R.id.activity_registration;
+    protected EditText emailEntry;
+    protected EditText passwordEntry;
+    FirebaseAuth mAuth;
+    FirebaseFirestore fstore;
+    private View activityView;
 
     private static final String TAG = "RegistrationActivity";
-
 
 
     @Override
@@ -46,6 +57,7 @@ public class RegistrationActivity extends AuthenticationSystem {
 
     //Registration button is clicked
     public void onRegistrationButtonClicked(View view) {
+        activityView = view;
         //Remembering all registration fields
         loginEntry = findViewById(R.id.login_entry);
         emailEntry = findViewById(R.id.email_entry);
@@ -58,27 +70,26 @@ public class RegistrationActivity extends AuthenticationSystem {
         fstore = FirebaseFirestore.getInstance();
         //Checking if empty fields exist
         if (checkAllFieldsAreFilled(loginEntry, emailEntry, passwordEntry, repeatPasswordEntry)) {
-            makeSnackbarError(getString(R.string.error_empty_fields), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_empty_fields));
             //Checking if password equals repeated password
         } else if (!checkIfPasswordEqual(passwordEntry, repeatPasswordEntry)) {
-            makeSnackbarError(getString(R.string.error_passwords_dont_equal), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_passwords_dont_equal));
             //Checking if login length is okay
         } else if (checkLoginLength(loginEntry)) {
-            makeSnackbarError(getString(R.string.error_login_length), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_login_length));
             //Checking if password length is okay
         } else if (checkPasswordLength(passwordEntry)) {
-            makeSnackbarError(getString(R.string.error_password_length), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_password_length));
             //Checking if email length is okay
         } else if (checkEmailLength(emailEntry)) {
-            makeSnackbarError(getString(R.string.error_email_length), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_email_length));
             //Checking if text in fields are valid
         } else if (!isValidEmail(emailEntry.getText().toString())) {
-            makeSnackbarError(getString(R.string.error_contains_not_valid_symbols), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_contains_not_valid_symbols));
         } else if (!isValidLogin(loginEntry.getText().toString())) {
-            makeSnackbarError(getString(R.string.email_error_contains_not_valid_symbols), activityID);
+            makeSnackbarError(activityView, getString(R.string.email_error_contains_not_valid_symbols));
         } else if (!isValidPassword(passwordEntry.getText().toString())) {
-            makeSnackbarError(getString(R.string.not_valid_password),
-                    activityID);
+            makeSnackbarError(activityView, getString(R.string.not_valid_password));
         } else {
             loadingDialog.startLoadingDialog();
             fstore.collection("users")
@@ -136,18 +147,17 @@ public class RegistrationActivity extends AuthenticationSystem {
         if (task.isSuccessful()) {
             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                 if (emailEntry.getText().toString().equals(document.getString("email"))) {
-                    makeSnackbarError(getString(R.string.user_with_this_email_already_exist),
-                            activityID);
+                    makeSnackbarError(activityView, getString(R.string.user_with_this_email_already_exist));
                     Log.d(TAG, "User with email already exist");
                 } else if (loginEntry.getText().toString().equals(document.
                         getString("nickname"))) {
-                    makeSnackbarError(getString(R.string.user_with_this_login_already_exist),
-                            activityID);
+                    makeSnackbarError(activityView, getString(R.string.user_with_this_login_already_exist));
                     Log.d(TAG, "User with nickname already");
                 } else {
                     mAuth.createUserWithEmailAndPassword(emailEntry.getText().toString(),
                             passwordEntry
-                                    .getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    .getText().toString()).addOnCompleteListener
+                            (new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
@@ -178,8 +188,8 @@ public class RegistrationActivity extends AuthenticationSystem {
                                             public void onFailure(@NonNull Exception e) {
                                                 loadingDialog.dismissDialog();
                                                 makeSnackbarError(
-                                                        getString(R.string.some_problem_occurred),
-                                                        activityID);
+                                                        activityView,
+                                                        getString(R.string.some_problem_occurred));
                                                 Log.d(TAG, "Document isn`t created");
                                             }
                                         });

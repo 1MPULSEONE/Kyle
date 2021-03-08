@@ -1,34 +1,28 @@
 package com.lovejazz.kyle;
 
+import android.view.View;
 import android.widget.EditText;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.regex.Pattern;
 
-public class AuthenticationSystem extends AppCompatActivity {
-    protected EditText emailEntry;
-    protected EditText passwordEntry;
-    FirebaseAuth mAuth;
-    FirebaseFirestore fstore;
+public abstract class EntryUtils {
 
-    void makeSnackbarError(String error, int activityId) {
+    static void makeSnackbarError(View view, String error) {
         Snackbar
                 .make(
-                        findViewById(activityId),
+                        view,
                         error,
                         Snackbar.LENGTH_LONG
                 )
-                .setTextColor(getResources().getColor(R.color.full_white))
-                .setBackgroundTint(getResources().getColor(R.color.red))
+                .setTextColor(view.getContext().getResources().getColor(R.color.full_white))
+                .setBackgroundTint(view.getContext().getResources().getColor(R.color.red))
                 .show();
     }
 
-    boolean isValidPassword(String text) {
+    static boolean isValidPassword(String text) {
         String textRegex = "^(?=.*?[A-Z]).{8,18}$";
         Pattern pat = Pattern.compile(textRegex);
         if (text == null)
@@ -36,7 +30,7 @@ public class AuthenticationSystem extends AppCompatActivity {
         return pat.matcher(text).matches();
     }
 
-    boolean isValidEmail(String text) {
+    static boolean isValidEmail(String text) {
         String textRegex = "[^@ \\t\\r\\n]+@[^@ \\t\\r\\n]+\\.[^@ \\t\\r\\n]+";
         Pattern pat = Pattern.compile(textRegex);
         if (text == null)
@@ -44,13 +38,13 @@ public class AuthenticationSystem extends AppCompatActivity {
         return pat.matcher(text).matches();
     }
 
-    boolean checkEmailLength(EditText emailEntry) {
+    static boolean checkEmailLength(EditText emailEntry) {
         return emailEntry.getText().toString().length() > 254 || emailEntry.getText().
                 toString().length() < 3;
     }
 
 
-    boolean checkPasswordLength(EditText passwordEntry) {
+    static boolean checkPasswordLength(EditText passwordEntry) {
         return passwordEntry.getText().toString().length() > 18 || passwordEntry.getText().
                 toString().length() < 8;
     }

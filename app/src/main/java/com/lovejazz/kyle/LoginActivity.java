@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -14,12 +15,21 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class LoginActivity extends AuthenticationSystem {
+import static com.lovejazz.kyle.EntryUtils.checkEmailLength;
+import static com.lovejazz.kyle.EntryUtils.checkPasswordLength;
+import static com.lovejazz.kyle.EntryUtils.isValidEmail;
+import static com.lovejazz.kyle.EntryUtils.isValidPassword;
+import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
-    private final int activityID = R.id.login_activity;
+public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
     private LoadingDialog loadingDialog;
+    protected EditText emailEntry;
+    protected EditText passwordEntry;
+    FirebaseAuth mAuth;
+    FirebaseFirestore fstore;
+    private View activityView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +40,20 @@ public class LoginActivity extends AuthenticationSystem {
     }
 
     public void onArrowButtonClicked(View view) {
-        Intent loginIntent = new Intent(LoginActivity.this, MainRegisterActivity.class);
+        Intent loginIntent = new Intent(LoginActivity.this,
+                MainRegisterActivity.class);
         startActivity(loginIntent);
     }
 
 
     public void onRegisterTextClicked(View view) {
-        Intent registerIntent = new Intent(LoginActivity.this, RegistrationActivity.class);
+        Intent registerIntent = new Intent(LoginActivity.this,
+                RegistrationActivity.class);
         startActivity(registerIntent);
     }
 
     public void onLoginBtnClicked(View view) {
+        activityView = view;
         //Remembering all login fields
         emailEntry = findViewById(R.id.email_entry);
         passwordEntry = findViewById(R.id.password_entry);
@@ -48,17 +61,17 @@ public class LoginActivity extends AuthenticationSystem {
         //initializing loading dialog
         loadingDialog = new LoadingDialog(LoginActivity.this);
         if (allFieldsAreNotFilled(emailEntry, passwordEntry)) {
-            makeSnackbarError(getString(R.string.error_empty_fields), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_empty_fields));
         } else if (!isValidEmail(emailEntry.getText().toString())) {
-            makeSnackbarError(getString(R.string.email_error_contains_not_valid_symbols)
-                    , activityID);
+            makeSnackbarError(activityView, getString(R.string.
+                    email_error_contains_not_valid_symbols)
+            );
         } else if (!isValidPassword(passwordEntry.getText().toString())) {
-            makeSnackbarError(getString(R.string.not_valid_password),
-                    activityID);
+            makeSnackbarError(activityView, getString(R.string.not_valid_password));
         } else if (checkEmailLength(emailEntry)) {
-            makeSnackbarError(getString(R.string.error_email_length), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_email_length));
         } else if (checkPasswordLength(passwordEntry)) {
-            makeSnackbarError(getString(R.string.error_password_length), activityID);
+            makeSnackbarError(activityView, getString(R.string.error_password_length));
         } else {
             loadingDialog.startLoadingDialog();
             Log.d(TAG, "Loading dialog started");
@@ -78,8 +91,8 @@ public class LoginActivity extends AuthenticationSystem {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            makeSnackbarError(getString(R.string.incorrect_email_or_password_entered),
-                                    activityID);
+                            makeSnackbarError(activityView, getString(
+                                    R.string.incorrect_email_or_password_entered));
                             Log.d(TAG, "Some problem occurred");
                         } else {
                             Log.d(TAG, "Sing in is successful!");
