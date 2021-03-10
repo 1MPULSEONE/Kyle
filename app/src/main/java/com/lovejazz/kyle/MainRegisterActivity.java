@@ -21,7 +21,8 @@ public class MainRegisterActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Intent intentToHome = new Intent(MainRegisterActivity.this,MainActivity.class);
+            Intent intentToHome = new Intent(MainRegisterActivity.this,
+                    MainActivity.class);
             startActivity(intentToHome);
         }
     }
@@ -41,13 +42,15 @@ public class MainRegisterActivity extends AppCompatActivity {
 
     //Login button is clicked
     public void onLoginButtonClicked(View view) {
-        Intent loginIntent = new Intent(MainRegisterActivity.this, LoginActivity.class);
+        Intent loginIntent = new Intent(MainRegisterActivity.this,
+                LoginActivity.class);
         startActivity(loginIntent);
     }
 
     //Register button is clicked
     public void onRegisterButtonClicked(View view) {
-        Intent registrationIntent = new Intent(MainRegisterActivity.this, RegistrationActivity.class);
+        Intent registrationIntent = new Intent(MainRegisterActivity.this,
+                RegistrationActivity.class);
         startActivity(registrationIntent);
     }
 

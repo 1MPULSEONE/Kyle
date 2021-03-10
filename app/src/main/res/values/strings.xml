@@ -74,6 +74,9 @@
     <string name="not_valid_password">Пароль должен содержать как минимум одини символ
         верхнего регистра!
     </string>
+    <string name="document_with_inserted_data_already_exist">Документ с введёнными данными
+    уже существует!</string>
+    <string name="name_error_not_valid">Название записи должно содержать до 30 симоволов!</string>
     <string name="user_with_this_email_already_exist">Пользователь с такой почтой уже существует!
     </string>
     <string name="user_with_this_login_already_exist">Пользователь с таким логином уже существует!
@@ -97,4 +100,4 @@
     <string name="accounts">Аккаунты</string>
     <string name="profile">Профиль</string>
     <string name="create_record">Создание записи</string>
-</resources>
+    </resources>

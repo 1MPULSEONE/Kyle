@@ -94,7 +94,7 @@
         app:layout_constraintVertical_bias="0.02" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/record_email_entry"
         android:layout_width="340dp"
         android:layout_height="40dp"
         android:background="@drawable/entry_background"
@@ -113,7 +113,7 @@
         app:layout_constraintVertical_bias="0.02" />
 
     <TextView
-        android:id="@+id/password_entry"
+        android:id="@+id/password_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/password"
@@ -124,11 +124,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/email_entry"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/record_email_entry"
         app:layout_constraintVertical_bias="0.02" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/record_password_entry"
         android:layout_width="340dp"
         android:layout_height="40dp"
         android:background="@drawable/entry_background"
@@ -143,8 +143,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/password_entry"
-        app:layout_constraintTop_toBottomOf="@+id/password_entry"
+        app:layout_constraintStart_toStartOf="@+id/password_title"
+        app:layout_constraintTop_toBottomOf="@+id/password_title"
         app:layout_constraintVertical_bias="0.02" />
 
     <Button
@@ -160,7 +160,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/record_password_entry"
         app:layout_constraintVertical_bias="0.849" />
 
 

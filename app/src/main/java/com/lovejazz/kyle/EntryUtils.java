@@ -30,6 +30,18 @@ public abstract class EntryUtils {
         return pat.matcher(text).matches();
     }
 
+    static boolean isValidLogin(String text) {
+        String textRegex = "^[a-zA-Z0-9]{5,12}$";
+        Pattern pat = Pattern.compile(textRegex);
+        if (text == null)
+            return false;
+        return pat.matcher(text).matches();
+    }
+
+    static boolean isValidName(String text) {
+        return (text.length() < 30);
+    }
+
     static boolean isValidEmail(String text) {
         String textRegex = "[^@ \\t\\r\\n]+@[^@ \\t\\r\\n]+\\.[^@ \\t\\r\\n]+";
         Pattern pat = Pattern.compile(textRegex);
@@ -38,15 +50,36 @@ public abstract class EntryUtils {
         return pat.matcher(text).matches();
     }
 
-    static boolean checkEmailLength(EditText emailEntry) {
-        return emailEntry.getText().toString().length() > 254 || emailEntry.getText().
-                toString().length() < 3;
+    static boolean checkEmailLength(String email) {
+        return email.length() > 254 || email.length() < 3;
     }
 
 
-    static boolean checkPasswordLength(EditText passwordEntry) {
-        return passwordEntry.getText().toString().length() > 18 || passwordEntry.getText().
-                toString().length() < 8;
+    static boolean checkPasswordLength(String password) {
+        return password.length() > 18 || password.length() < 8;
+    }
+
+    static boolean checkAllFieldsAreFilled(String recordName, String recordEmail, String
+            recordPassword) {
+        return (recordName.equals("") || recordEmail.equals("") || recordPassword.equals(""));
+    }
+
+    static boolean checkAllFieldsAreFilled(String email, String password) {
+        return (email.equals("") || password.equals(""));
+    }
+
+    static boolean checkAllFieldsAreFilled(String userLogin, String userEmail, String
+            userPassword, String userPasswordRepeatEntry) {
+        return (userLogin.equals("") || userEmail.equals("") || userPassword.equals("") ||
+                userPasswordRepeatEntry.equals(""));
+    }
+
+    static boolean checkIfPasswordEqual(String userPassword, String userPasswordRepeated) {
+        return userPassword.equals(userPasswordRepeated);
+    }
+
+    static boolean checkLoginLength(String userLogin) {
+        return userLogin.length() > 12 || userLogin.length() < 5;
     }
 
 }

@@ -15,6 +15,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import static com.lovejazz.kyle.EntryUtils.checkAllFieldsAreFilled;
 import static com.lovejazz.kyle.EntryUtils.checkEmailLength;
 import static com.lovejazz.kyle.EntryUtils.checkPasswordLength;
 import static com.lovejazz.kyle.EntryUtils.isValidEmail;
@@ -25,8 +26,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
     private LoadingDialog loadingDialog;
-    protected EditText emailEntry;
-    protected EditText passwordEntry;
+    private String userEmail;
+    private String userPassword;
     FirebaseAuth mAuth;
     FirebaseFirestore fstore;
     private View activityView;
@@ -55,12 +56,14 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginBtnClicked(View view) {
         activityView = view;
         //Remembering all login fields
-        emailEntry = findViewById(R.id.email_entry);
-        passwordEntry = findViewById(R.id.password_entry);
+        EditText emailEntry = findViewById(R.id.email_entry);
+        EditText passwordEntry = findViewById(R.id.password_entry);
+        userEmail = emailEntry.getText().toString();
+        userPassword = passwordEntry.getText().toString();
         fstore = FirebaseFirestore.getInstance();
         //initializing loading dialog
         loadingDialog = new LoadingDialog(LoginActivity.this);
-        if (allFieldsAreNotFilled(emailEntry, passwordEntry)) {
+        if (checkAllFieldsAreFilled(userEmail, userPassword)) {
             makeSnackbarError(activityView, getString(R.string.error_empty_fields));
         } else if (!isValidEmail(emailEntry.getText().toString())) {
             makeSnackbarError(activityView, getString(R.string.
@@ -68,21 +71,15 @@ public class LoginActivity extends AppCompatActivity {
             );
         } else if (!isValidPassword(passwordEntry.getText().toString())) {
             makeSnackbarError(activityView, getString(R.string.not_valid_password));
-        } else if (checkEmailLength(emailEntry)) {
+        } else if (checkEmailLength(userEmail)) {
             makeSnackbarError(activityView, getString(R.string.error_email_length));
-        } else if (checkPasswordLength(passwordEntry)) {
+        } else if (checkPasswordLength(userPassword)) {
             makeSnackbarError(activityView, getString(R.string.error_password_length));
         } else {
             loadingDialog.startLoadingDialog();
             Log.d(TAG, "Loading dialog started");
-            singIn(emailEntry.getText().toString(), passwordEntry.getText()
-                    .toString());
+            singIn(userEmail, userPassword);
         }
-    }
-
-    private boolean allFieldsAreNotFilled(EditText emailEntry, EditText passwordEntry) {
-        return emailEntry.getText().toString().equals("") || passwordEntry.getText().toString()
-                .equals("");
     }
 
     private void singIn(String email, String password) {
