@@ -1,6 +1,5 @@
 package com.lovejazz.kyle;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,7 +48,6 @@ public class InformationFragment extends Fragment {
     private EditText recordPasswordEntry;
     FirebaseAuth mAuth;
     FirebaseFirestore fstore;
-    private String userID;
     private static final String TAG = "InformationFragment";
 
 
@@ -99,8 +97,7 @@ public class InformationFragment extends Fragment {
         } else if (!isValidName(recordName)) {
             makeSnackbarError(view, getString(R.string.name_error_not_valid));
         } else {
-            Log.d("hui", mAuth.getCurrentUser().getUid());
-            fstore.collection("users").document(mAuth.getCurrentUser()
+            fstore.collection("users").document(Objects.requireNonNull(mAuth.getCurrentUser())
                     .getUid()).collection("accounts").get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -115,7 +112,7 @@ public class InformationFragment extends Fragment {
     private void createRecord(Task<QuerySnapshot> task) {
         boolean alreadyExist = false;
         //Getting userId
-        userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         if (task.isSuccessful()) {
             Log.d(TAG, "Collection received successfully");
             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
@@ -132,10 +129,11 @@ public class InformationFragment extends Fragment {
             if (!alreadyExist) {
                 Log.d(TAG, "Document created successfully");
                 DocumentReference documentReference = fstore.collection("users").
-                        document(userID).collection("accounts").
-                        document(recordName);
+                        document(userID).collection("accounts").document();
+                documentReference.getId();
+                Log.d(TAG, documentReference.getId() + " - documentReferenceId");
                 Map<String, Object> record = new HashMap<>();
-                record.put("id",documentReference.getId());
+                record.put("id", documentReference.getId());
                 record.put("name", recordName);
                 record.put("category", recordTypeSpinnerValue);
                 record.put("email", recordEmail);
