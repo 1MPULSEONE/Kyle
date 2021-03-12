@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -134,6 +135,7 @@ public class InformationFragment extends Fragment {
                         document(userID).collection("accounts").
                         document(recordName);
                 Map<String, Object> record = new HashMap<>();
+                record.put("id",documentReference.getId());
                 record.put("name", recordName);
                 record.put("category", recordTypeSpinnerValue);
                 record.put("email", recordEmail);
@@ -141,8 +143,10 @@ public class InformationFragment extends Fragment {
                 documentReference.set(record).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Intent intentToAccounts = new Intent();
-                        startActivity(intentToAccounts);
+                        //Moving to accountsFragment
+                        final ViewPager pager = Objects.requireNonNull(getActivity()).findViewById
+                                (R.id.main_pager);
+                        pager.setCurrentItem(0);
                         //Clearing entries
                         recordNameEntry.setText("");
                         recordEmailEntry.setText("");
