@@ -46,6 +46,7 @@ public class InformationFragment extends Fragment {
     private EditText recordNameEntry;
     private EditText recordEmailEntry;
     private EditText recordPasswordEntry;
+    private LoadingDialog loadingDialog;
     FirebaseAuth mAuth;
     FirebaseFirestore fstore;
     private static final String TAG = "InformationFragment";
@@ -74,10 +75,11 @@ public class InformationFragment extends Fragment {
             }
         });
         return inflaterView;
-
     }
 
     private void onCreateButtonClicked(View view) {
+        //Initializing loading dialog
+        loadingDialog = new LoadingDialog(getActivity());
         //Setting view for snackbar
         snackbarView = view;
         //Initializing fstore
@@ -97,6 +99,7 @@ public class InformationFragment extends Fragment {
         } else if (!isValidName(recordName)) {
             makeSnackbarError(view, getString(R.string.name_error_not_valid));
         } else {
+            loadingDialog.startLoadingDialog();
             fstore.collection("users").document(Objects.requireNonNull(mAuth.getCurrentUser())
                     .getUid()).collection("accounts").get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -162,5 +165,6 @@ public class InformationFragment extends Fragment {
         } else {
             Log.d(TAG, "Collection did not receive successfully");
         }
+        loadingDialog.dismissDialog();
     }
 }
