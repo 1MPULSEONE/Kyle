@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     return new CreateFragment();
                 case 2:
-                    return new SettingsFragment();
+                    return new ProfileFragment();
             }
             return new PasswordsFragment();
         }

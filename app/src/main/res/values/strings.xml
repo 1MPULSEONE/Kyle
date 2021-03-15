@@ -100,4 +100,10 @@
     <string name="accounts">Аккаунты</string>
     <string name="profile">Профиль</string>
     <string name="create_record">Создание записи</string>
+    <!--ProfileFragment strings-->
+    <string name="default_email">Почта по умолчанию</string>
+    <string name="insert_default_email">Введите почту по умолчанию</string>
+    <!--DialogFragment strings-->
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
     </resources>
