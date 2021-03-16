@@ -100,6 +100,7 @@
         android:background="@drawable/entry_background"
         android:ems="19"
         android:hint="@string/enter_email_of_record"
+        android:fontFamily="sans-serif"
         android:padding="10dp"
         android:textColor="@color/dark_grey"
         android:textColorHint="@color/dark_grey"
