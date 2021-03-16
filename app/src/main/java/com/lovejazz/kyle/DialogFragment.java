@@ -35,9 +35,9 @@ public class DialogFragment extends AppCompatDialogFragment {
         fstore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         //Creating dialogFragment
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.layout_dialog, null);
+        final View view = inflater.inflate(R.layout.layout_dialog, null);
         editTextEmail = view.findViewById(R.id.email_confirm_entry);
         builder.setView(view)
                 .setTitle(getString(R.string.insert_default_email))
@@ -51,45 +51,53 @@ public class DialogFragment extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Check if value changed
-                        DocumentReference documentReference = fstore.collection
-                                ("users").document(
-                                mAuth.getCurrentUser().getUid());
-                        documentReference.get().
-                                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        Log.d(TAG, "User document has received successfully");
-                                        DocumentSnapshot document = task.getResult();
-                                        if (!(editTextEmail.getText().toString().equals(
-                                                document.
-                                                        getString("defaultEmail")))) {
-                                            fstore.collection("users").document(mAuth.
-                                                    getCurrentUser().getUid()).
-                                                    update("defaultEmail", editTextEmail.
-                                                            getText().toString())
-                                                    .addOnSuccessListener(new OnSuccessListener
-                                                            <Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            Log.d(TAG,
-                                                                    "defaultEmail has been" +
-                                                                            " written " +
-                                                                            "successfully");
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull
-                                                                                      Exception e) {
-                                                            Log.d(TAG,
-                                                                    "defaultEmail has not been"
-                                                                            + "written" +
-                                                                            " succesfully");
-                                                        }
-                                                    });
+                        //TODO Make snackbar without closing dialogFragment
+                        //TODO Remember editText last value to the field
+                        if (!EntryUtils.isValidEmail(editTextEmail.getText().toString())) {
+                            EntryUtils.makeSnackbarError(getActivity().
+                                            findViewById(R.id.main_activity),
+                                    getString(R.string.email_error_contains_not_valid_symbols));
+                        } else {
+                            DocumentReference documentReference = fstore.collection
+                                    ("users").document(
+                                    mAuth.getCurrentUser().getUid());
+                            documentReference.get().
+                                    addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            Log.d(TAG, "User document has received successfully");
+                                            DocumentSnapshot document = task.getResult();
+                                            if (!(editTextEmail.getText().toString().equals(
+                                                    document.
+                                                            getString("defaultEmail")))) {
+                                                fstore.collection("users").document(mAuth.
+                                                        getCurrentUser().getUid()).
+                                                        update("defaultEmail", editTextEmail.
+                                                                getText().toString())
+                                                        .addOnSuccessListener(new OnSuccessListener
+                                                                <Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Log.d(TAG,
+                                                                        "defaultEmail has been" +
+                                                                                " written " +
+                                                                                "successfully");
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull
+                                                                                          Exception e) {
+                                                                Log.d(TAG,
+                                                                        "defaultEmail has not been"
+                                                                                + "written" +
+                                                                                " succesfully");
+                                                            }
+                                                        });
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                        }
                     }
                 });
         return builder.create();
