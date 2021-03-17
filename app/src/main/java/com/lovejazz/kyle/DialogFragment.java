@@ -39,6 +39,19 @@ public class DialogFragment extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.layout_dialog, null);
         editTextEmail = view.findViewById(R.id.email_confirm_entry);
+        //Getting value if it exist
+        final DocumentReference userDocumentReference = fstore.collection
+                ("users").document(mAuth.getCurrentUser().getUid());
+        userDocumentReference.get().addOnCompleteListener
+                (new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot userDocument = task.getResult();
+                        String defaultEmail = userDocument.
+                                getString("defaultEmail");
+                        editTextEmail.setText(defaultEmail);
+                    }
+                });
         builder.setView(view)
                 .setTitle(getString(R.string.insert_default_email))
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
