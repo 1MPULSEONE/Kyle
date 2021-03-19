@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -56,6 +58,15 @@ public class InformationFragment extends Fragment {
 
 
     @Override
+    public void onStart() {
+        super.onStart();
+        //Getting EditText fields.
+        recordNameEntry = inflaterView.findViewById(R.id.record_name_entry);
+        recordEmailEntry = inflaterView.findViewById(R.id.record_email_entry);
+        recordPasswordEntry = inflaterView.findViewById(R.id.record_password_entry);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -75,6 +86,8 @@ public class InformationFragment extends Fragment {
         appSpinner = inflaterView.findViewById(R.id.app_spinner);
         //Getting string array with all apps names from firestore
         appsNamesList = new ArrayList<>();
+        //Adding first value, if user`s app is not in firestore
+        appsNamesList.add("Стандартная запись");
         fstore.collection("apps").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -82,7 +95,33 @@ public class InformationFragment extends Fragment {
                         setAppSpinnerValues(task);
                     }
                 });
+        appSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i != 0) {
+                    fstore.collection("users").document(Objects.
+                            requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot userDocument = task.getResult();
+                                String defaultEmail = userDocument.getString("defaultEmail");
+                                recordEmailEntry.setText(defaultEmail);
+                            }
+                        }
+                    });
+                } else {
+                    recordEmailEntry.setText("");
+                }
+            }
 
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         //Creating record
         Button button = inflaterView.findViewById(R.id.button_create_record);
         button.setOnClickListener(new View.OnClickListener() {
@@ -100,9 +139,6 @@ public class InformationFragment extends Fragment {
         //Setting view for snackbar
         snackbarView = view;
         //Getting all strings from editTexts
-        recordNameEntry = inflaterView.findViewById(R.id.record_name_entry);
-        recordEmailEntry = inflaterView.findViewById(R.id.record_email_entry);
-        recordPasswordEntry = inflaterView.findViewById(R.id.record_password_entry);
         recordName = recordNameEntry.getText().toString();
         recordEmail = recordEmailEntry.getText().toString();
         recordPassword = recordPasswordEntry.getText().toString();
@@ -115,8 +151,9 @@ public class InformationFragment extends Fragment {
             makeSnackbarError(view, getString(R.string.name_error_not_valid));
         } else {
             loadingDialog.startLoadingDialog();
-            fstore.collection("users").document(Objects.requireNonNull(mAuth.getCurrentUser())
-                    .getUid()).collection("accounts").get()
+            fstore.collection("users").
+                    document(Objects.requireNonNull(mAuth.getCurrentUser())
+                            .getUid()).collection("accounts").get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -183,14 +220,14 @@ public class InformationFragment extends Fragment {
         loadingDialog.dismissDialog();
     }
 
-    private void setAppSpinnerValues (@NonNull Task<QuerySnapshot> task) {
+    private void setAppSpinnerValues(@NonNull Task<QuerySnapshot> task) {
         if (task.isSuccessful()) {
-            for (QueryDocumentSnapshot document : task.getResult()) {
+            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                 appsNamesList.add(document.getString("name"));
             }
         }
         Log.d(TAG, appsNamesList.toString() + " - appsNamesList");
-        ArrayAdapter<String> appSpinnerAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> appSpinnerAdapter = new ArrayAdapter<>(
                 inflaterView.getContext(), R.layout.spinner_item, appsNamesList);
         appSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         appSpinner.setAdapter(appSpinnerAdapter);
