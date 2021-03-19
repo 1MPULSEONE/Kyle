@@ -79,6 +79,39 @@
         app:layout_constraintVertical_bias="0.02" />
 
     <TextView
+        android:id="@+id/app_spinner_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app"
+        android:textColor="@color/light_grey"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/record_name_text"
+        app:layout_constraintTop_toBottomOf="@+id/record_name_entry"
+        app:layout_constraintVertical_bias="0.02" />
+
+    <Spinner
+        android:id="@+id/app_spinner"
+        android:layout_width="340dp"
+        android:layout_height="40dp"
+        android:background="@drawable/spinner_background"
+        android:ems="19"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/light_grey"
+        android:textColorHint="@color/dark_grey"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/record_name_entry"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/app_spinner_title"
+        app:layout_constraintTop_toBottomOf="@+id/app_spinner_title"
+        app:layout_constraintVertical_bias="0.02" />
+
+    <TextView
         android:id="@+id/email_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -90,7 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/record_name_text"
-        app:layout_constraintTop_toBottomOf="@+id/record_name_entry"
+        app:layout_constraintTop_toBottomOf="@+id/app_spinner"
         app:layout_constraintVertical_bias="0.02" />
 
     <EditText
@@ -99,8 +132,8 @@
         android:layout_height="40dp"
         android:background="@drawable/entry_background"
         android:ems="19"
-        android:hint="@string/enter_email_of_record"
         android:fontFamily="sans-serif"
+        android:hint="@string/enter_email_of_record"
         android:padding="10dp"
         android:textColor="@color/dark_grey"
         android:textColorHint="@color/dark_grey"

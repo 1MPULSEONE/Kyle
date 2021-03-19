@@ -25,6 +25,7 @@
     <string name="password">Пароль</string>
     <string name="crate_btn">Создать</string>
     <string name="record_type">Тип записи</string>
+    <string name="app">Приложение</string>
     <!--MainActivity strings-->
     <string name="settings_button">Settings button</string>
     <string name="folders">Папки</string>

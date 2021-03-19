@@ -1,11 +1,6 @@
 package com.lovejazz.kyle;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,7 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,6 +39,7 @@ import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 public class InformationFragment extends Fragment {
     private View inflaterView;
     private Spinner typeSpinner;
+    private Spinner appSpinner;
     private String recordName;
     private String recordEmail;
     private String recordPassword;
@@ -47,6 +49,7 @@ public class InformationFragment extends Fragment {
     private EditText recordEmailEntry;
     private EditText recordPasswordEntry;
     private LoadingDialog loadingDialog;
+    private List<String> appsNamesList;
     FirebaseAuth mAuth;
     FirebaseFirestore fstore;
     private static final String TAG = "InformationFragment";
@@ -60,12 +63,26 @@ public class InformationFragment extends Fragment {
                 false);
         //Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        //Initializing fstore
+        fstore = FirebaseFirestore.getInstance();
         //Creating spinner for fragment to choose categories
         typeSpinner = inflaterView.findViewById(R.id.type_spinner);
         ArrayAdapter<CharSequence> typeSpinnerAdapter = ArrayAdapter.createFromResource(
                 inflaterView.getContext(), R.array.type_spinner, R.layout.spinner_item);
         typeSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         typeSpinner.setAdapter(typeSpinnerAdapter);
+        //Creating spinner for fragment to choose app
+        appSpinner = inflaterView.findViewById(R.id.app_spinner);
+        //Getting string array with all apps names from firestore
+        appsNamesList = new ArrayList<>();
+        fstore.collection("apps").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        setAppSpinnerValues(task);
+                    }
+                });
+
         //Creating record
         Button button = inflaterView.findViewById(R.id.button_create_record);
         button.setOnClickListener(new View.OnClickListener() {
@@ -82,8 +99,6 @@ public class InformationFragment extends Fragment {
         loadingDialog = new LoadingDialog(getActivity());
         //Setting view for snackbar
         snackbarView = view;
-        //Initializing fstore
-        fstore = FirebaseFirestore.getInstance();
         //Getting all strings from editTexts
         recordNameEntry = inflaterView.findViewById(R.id.record_name_entry);
         recordEmailEntry = inflaterView.findViewById(R.id.record_email_entry);
@@ -166,5 +181,18 @@ public class InformationFragment extends Fragment {
             Log.d(TAG, "Collection did not receive successfully");
         }
         loadingDialog.dismissDialog();
+    }
+
+    private void setAppSpinnerValues (@NonNull Task<QuerySnapshot> task) {
+        if (task.isSuccessful()) {
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                appsNamesList.add(document.getString("name"));
+            }
+        }
+        Log.d(TAG, appsNamesList.toString() + " - appsNamesList");
+        ArrayAdapter<String> appSpinnerAdapter = new ArrayAdapter<String>(
+                inflaterView.getContext(), R.layout.spinner_item, appsNamesList);
+        appSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        appSpinner.setAdapter(appSpinnerAdapter);
     }
 }
