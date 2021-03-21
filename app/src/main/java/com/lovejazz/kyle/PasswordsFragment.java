@@ -20,20 +20,26 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class PasswordsFragment extends Fragment {
     private static final String TAG = "PasswordsFragment";
     private FirebaseFirestore fstore;
     private FirebaseAuth mAuth;
     private FirebaseStorage storage;
-    private TreeMap maxCountOfClicks;
+    private List<Map.Entry<String, Integer>> maxCountOfClicks;
     private String[] mostPopularAccountsNames;
     private String currentName;
     private String[] bannerReferences;
@@ -60,12 +66,7 @@ public class PasswordsFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
-        maxCountOfClicks = new TreeMap<>(new Comparator<Map.Entry<String, Integer>>(){
-            @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
-            }
-        });
+        maxCountOfClicks = new ArrayList<>();
 
         //Getting maxCountOfClicks
         fstore.collection("users").
@@ -79,17 +80,22 @@ public class PasswordsFragment extends Fragment {
                                         parseInt(document.get("countOfClicks").toString());
                                 Log.d(TAG, countOfClicks + " - count of clicks");
                                 if (maxCountOfClicks.size() < 6) {
-                                    maxCountOfClicks.put(document.getId(), countOfClicks);
+                                    maxCountOfClicks.add(new AbstractMap.SimpleEntry<>(document.getId(), countOfClicks));
                                 } else {
-                                    for (String element : maxCountOfClicks.keySet()) {
-                                        if (countOfClicks > maxCountOfClicks.get(element)) {
-                                            maxCountOfClicks.put(element, countOfClicks);
+                                    for (int i = 0; i < maxCountOfClicks.size(); i ++ ) {//Map.Entry<String, Integer> element : maxCountOfClicks) {
+                                        if (countOfClicks > maxCountOfClicks.get(i).getValue()) {
+                                            maxCountOfClicks.add(new AbstractMap.SimpleEntry<>(maxCountOfClicks.get(i).getKey(), countOfClicks));
                                             break;
                                         }
                                     }
                                 }
                                 //Sorting hashMap
-                                Collections.sort(maxCountOfClicks);
+                                Collections.sort(maxCountOfClicks, new Comparator<Map.Entry<String, Integer>>() {
+                                    @Override
+                                    public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                                        return o1.getValue().compareTo(o2.getValue());
+                                    }
+                                });
                                 Collections.reverse(maxCountOfClicks);
                             }
                             Log.d(TAG, maxCountOfClicks + " - maxCountOfClicks");
