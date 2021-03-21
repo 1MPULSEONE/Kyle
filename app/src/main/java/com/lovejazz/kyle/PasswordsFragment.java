@@ -25,14 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class PasswordsFragment extends Fragment {
     private static final String TAG = "PasswordsFragment";
@@ -80,19 +74,23 @@ public class PasswordsFragment extends Fragment {
                                         parseInt(document.get("countOfClicks").toString());
                                 Log.d(TAG, countOfClicks + " - count of clicks");
                                 if (maxCountOfClicks.size() < 6) {
-                                    maxCountOfClicks.add(new AbstractMap.SimpleEntry<>(document.getId(), countOfClicks));
+                                    maxCountOfClicks.add(new AbstractMap.SimpleEntry<>
+                                            (document.getId(), countOfClicks));
                                 } else {
-                                    for (int i = 0; i < maxCountOfClicks.size(); i ++ ) {//Map.Entry<String, Integer> element : maxCountOfClicks) {
+                                    for (int i = 0; i < maxCountOfClicks.size(); i++) {
                                         if (countOfClicks > maxCountOfClicks.get(i).getValue()) {
-                                            maxCountOfClicks.add(new AbstractMap.SimpleEntry<>(maxCountOfClicks.get(i).getKey(), countOfClicks));
-                                            break;
+                                            maxCountOfClicks.add(new AbstractMap.SimpleEntry<>
+                                                    (maxCountOfClicks.get(i).getKey(),
+                                                            countOfClicks));
                                         }
                                     }
                                 }
                                 //Sorting hashMap
-                                Collections.sort(maxCountOfClicks, new Comparator<Map.Entry<String, Integer>>() {
+                                Collections.sort(maxCountOfClicks, new Comparator<Map.Entry<String,
+                                        Integer>>() {
                                     @Override
-                                    public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                                    public int compare(Map.Entry<String, Integer> o1, Map.
+                                            Entry<String, Integer> o2) {
                                         return o1.getValue().compareTo(o2.getValue());
                                     }
                                 });
@@ -135,7 +133,7 @@ public class PasswordsFragment extends Fragment {
                 position = 0;
                 fstore.collection("users").document(mAuth.getCurrentUser().getUid())
                         .collection("accounts").
-                        whereEqualTo("countOfClicks", maxCountOfClicks.get(i)).get().
+                        whereEqualTo("id", maxCountOfClicks.get(i).getKey()).get().
                         addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -167,7 +165,6 @@ public class PasswordsFragment extends Fragment {
                     }
                 });
                 position++;
-                break;
             }
         }
     }
