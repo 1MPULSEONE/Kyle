@@ -22,14 +22,18 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class PasswordsFragment extends Fragment {
     private static final String TAG = "PasswordsFragment";
     private FirebaseFirestore fstore;
     private FirebaseAuth mAuth;
     private FirebaseStorage storage;
-    private HashMap<String, Integer> maxCountOfClicks;
+    private TreeMap maxCountOfClicks;
     private String[] mostPopularAccountsNames;
     private String currentName;
     private String[] bannerReferences;
@@ -55,7 +59,14 @@ public class PasswordsFragment extends Fragment {
         fstore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        maxCountOfClicks = new HashMap<>();
+
+        maxCountOfClicks = new TreeMap<>(new Comparator<Map.Entry<String, Integer>>(){
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+
         //Getting maxCountOfClicks
         fstore.collection("users").
                 document(mAuth.getCurrentUser().getUid()).collection("accounts").get()
