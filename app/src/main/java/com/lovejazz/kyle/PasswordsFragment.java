@@ -1,76 +1,184 @@
 package com.lovejazz.kyle;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class PasswordsFragment extends Fragment {
+    private static final String TAG = "PasswordsFragment";
+    private FirebaseFirestore fstore;
+    private FirebaseAuth mAuth;
+    private FirebaseStorage storage;
+    private HashMap<String, Integer> maxCountOfClicks;
+    private String[] mostPopularAccountsNames;
+    private String currentName;
+    private String[] bannerReferences;
+    private String currentBannerReference;
+    private String currentAppName;
+    private View view;
+    private int position;
+    private int imagePosition;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_passwords, container, false);
-        //Connecting folder`s RecyclerView
-        RecyclerView folderRecycler = view.findViewById(R.id.folder_recycler);
-        String[] foldersName = new String[Folder.folders.length];
-        for (int i = 0; i < foldersName.length; i++) {
-            foldersName[i] = Folder.folders[i].getName();
-        }
-        int[] foldersImages = new int[Folder.folders.length];
-        for (int i = 0; i < foldersImages.length; i++) {
-            foldersImages[i] = Folder.folders[i].getImageRecourseId();
-        }
-        FolderAdapter folderAdapter = new FolderAdapter(foldersName, foldersImages);
-        folderRecycler.setAdapter(folderAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        folderRecycler.setLayoutManager(layoutManager);
-        //Connecting credit card`s RecyclerView
-        RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
-        String[] creditsName = new String[CreditCard.creditCards.length];
-        for (int i = 0; i < creditsName.length; i++) {
-            creditsName[i] = CreditCard.creditCards[i].getName();
-        }
-        String[] creditsLogoNames = new String[CreditCard.creditCards.length];
-        for (int i = 0; i < creditsName.length; i++) {
-            creditsLogoNames[i] = CreditCard.creditCards[i].getLogoName();
-        }
-        int[] gradientId = new int[CreditCard.creditCards.length];
-        for (int i = 0; i < gradientId.length; i++) {
-            gradientId[i] = CreditCard.creditCards[i].getGradientId();
-        }
-        CreditCardAdapter creditCardAdapter = new CreditCardAdapter(creditsName, creditsLogoNames, gradientId);
-        creditRecycler.setAdapter(creditCardAdapter);
-        LinearLayoutManager cardManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        creditRecycler.setLayoutManager(cardManager);
-        //Connecting credit card`s RecyclerView
-        RecyclerView accountRecycler = view.findViewById(R.id.account_recycler);
-        String[] accountsName = new String[Account.accounts.length];
-        for (int i = 0; i < accountsName.length; i++) {
-            accountsName[i] = Account.accounts[i].getName();
-        }
-        String[] accountsLogins = new String[Account.accounts.length];
-        for (int i = 0; i < accountsLogins.length; i++) {
-            accountsLogins[i] = Account.accounts[i].getLogin();
-        }
-        int[] imageId = new int[Account.accounts.length];
-        for (int i = 0; i < imageId.length; i++) {
-            imageId[i] = Account.accounts[i].getImageId();
-        }
-        AccountAdapter accountAdapter = new AccountAdapter(accountsName, accountsLogins, imageId);
-        accountRecycler.setAdapter(accountAdapter);
-        LinearLayoutManager accountManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
-        accountRecycler.setLayoutManager(accountManager);
+        view = inflater.inflate(R.layout.fragment_passwords, container, false);
+        //Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        //Initializing fstore
+        fstore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        maxCountOfClicks = new HashMap<>();
+        //Getting maxCountOfClicks
+        fstore.collection("users").
+                document(mAuth.getCurrentUser().getUid()).collection("accounts").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                int countOfClicks = Integer.
+                                        parseInt(document.get("countOfClicks").toString());
+                                Log.d(TAG, countOfClicks + " - count of clicks");
+                                if (maxCountOfClicks.size() < 6) {
+                                    maxCountOfClicks.put(document.getId(), countOfClicks);
+                                } else {
+                                    for (String element : maxCountOfClicks.keySet()) {
+                                        if (countOfClicks > maxCountOfClicks.get(element)) {
+                                            maxCountOfClicks.put(element, countOfClicks);
+                                            break;
+                                        }
+                                    }
+                                }
+                                //Sorting hashMap
+                                Collections.sort(maxCountOfClicks);
+                                Collections.reverse(maxCountOfClicks);
+                            }
+                            Log.d(TAG, maxCountOfClicks + " - maxCountOfClicks");
+                            createPopularAccountsRecyclerView();
+                        }
+                    }
+                });
+//        //Connecting credit card`s RecyclerView
+//        RecyclerView accountRecycler = view.findViewById(R.id.account_recycler);
+//        String[] accountsName = new String[Account.accounts.length];
+//        for (int i = 0; i < accountsName.length; i++) {
+//            accountsName[i] = Account.accounts[i].getName();
+//        }
+//        String[] accountsLogins = new String[Account.accounts.length];
+//        for (int i = 0; i < accountsLogins.length; i++) {
+//            accountsLogins[i] = Account.accounts[i].getLogin();
+//        }
+//        int[] imageId = new int[Account.accounts.length];
+//        for (int i = 0; i < imageId.length; i++) {
+//            imageId[i] = Account.accounts[i].getImageId();
+//        }
+//        AccountAdapter accountAdapter = new AccountAdapter(accountsName, accountsLogins, imageId);
+//        accountRecycler.setAdapter(accountAdapter);
+//        LinearLayoutManager accountManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
+//        accountRecycler.setLayoutManager(accountManager);
         return view;
     }
 
+    private void createPopularAccountsRecyclerView() {
+        if (maxCountOfClicks.size() == 0) {
+            Log.d(TAG, " - maxCountOfClicks == 0");
+        } else {
+            Log.d(TAG, " - maxCountOfClicks != 0");
+            mostPopularAccountsNames = new String[maxCountOfClicks.size()];
+            bannerReferences = new String[maxCountOfClicks.size()];
+            for (int i = 0; i < mostPopularAccountsNames.length; i++) {
+                position = 0;
+                fstore.collection("users").document(mAuth.getCurrentUser().getUid())
+                        .collection("accounts").
+                        whereEqualTo("countOfClicks", maxCountOfClicks.get(i)).get().
+                        addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                getRecordInfo(task);
+                            }
+                        });
+            }
+        }
+    }
+
+    private void getRecordInfo(@NonNull Task<QuerySnapshot> task) {
+        Log.d(TAG, " - getting record info");
+        if (task.isSuccessful()) {
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                currentName = document.getString("name");
+                Log.d(TAG, currentName + " - currentName");
+                mostPopularAccountsNames[position] = currentName;
+                currentAppName = document.getString("appName");
+                Log.d(TAG, currentAppName + " - currentAppName");
+                Log.d(TAG, position + " - position");
+                Log.d(TAG, "banners/" + currentAppName.toLowerCase() + "Banner.png");
+                fstore.collection("apps").whereEqualTo("name", currentAppName).
+                        get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        Log.d(TAG, imagePosition + " - imagePosition");
+                        getBanner(task);
+                        imagePosition++;
+                    }
+                });
+                position++;
+                break;
+            }
+        }
+    }
+
+    private void getBanner(@NonNull Task<QuerySnapshot> task) {
+        if (task.isSuccessful()) {
+            Log.d(TAG, " - getting banner");
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                currentBannerReference = document.getString("banner");
+                bannerReferences[imagePosition] = currentBannerReference;
+                Log.d(TAG, currentBannerReference + " - currentBannerReference");
+                if (imagePosition == mostPopularAccountsNames.length - 1) {
+                    setRecycler();
+                }
+            }
+        }
+    }
+
+    private void setRecycler() {
+        Log.d(TAG, Arrays.toString(bannerReferences) + " - bannerReferences");
+        Log.d(TAG, Arrays.toString(mostPopularAccountsNames) + " - mostPopularAccountsNames");
+        Log.d(TAG, "Creating recycler");
+        RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
+        MostPopularAccountsAdapter creditCardAdapter = new MostPopularAccountsAdapter
+                (mostPopularAccountsNames, bannerReferences, getContext());
+        creditRecycler.setAdapter(creditCardAdapter);
+        LinearLayoutManager cardManager = new LinearLayoutManager(view.getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
+        creditRecycler.setLayoutManager(cardManager);
+    }
 }

@@ -30,7 +30,6 @@
     <string name="settings_button">Settings button</string>
     <string name="folders">Папки</string>
     <string name="find_button">Find button</string>
-    <string name="most_popular">Наиболее популярные</string>
     <string name="credit_cards">Кредитные карточки</string>
     <!--folder_card.xml strings-->
     <string name="folder_image">Folder background image</string>
@@ -107,4 +106,8 @@
     <!--DialogFragment strings-->
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
-    </resources>
+    <!--fragment_passwords.xml strings-->
+    <string name="most_popular">Наиболее популярные</string>
+    <string name="categories">Категории</string>
+    <string name="hello_world">Hello world!</string>
+</resources>

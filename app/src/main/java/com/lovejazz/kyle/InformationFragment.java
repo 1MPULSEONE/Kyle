@@ -52,6 +52,7 @@ public class InformationFragment extends Fragment {
     private EditText recordPasswordEntry;
     private LoadingDialog loadingDialog;
     private List<String> appsNamesList;
+    private String appSpinnerValue;
     FirebaseAuth mAuth;
     FirebaseFirestore fstore;
     private static final String TAG = "InformationFragment";
@@ -143,6 +144,7 @@ public class InformationFragment extends Fragment {
         recordEmail = recordEmailEntry.getText().toString();
         recordPassword = recordPasswordEntry.getText().toString();
         recordTypeSpinnerValue = typeSpinner.getSelectedItem().toString();
+        appSpinnerValue = appSpinner.getSelectedItem().toString();
         if (checkAllFieldsAreFilled(recordName, recordEmail, recordPassword)) {
             makeSnackbarError(view, getString(R.string.error_empty_fields));
         } else if (!isValidEmail(recordEmail)) {
@@ -173,7 +175,8 @@ public class InformationFragment extends Fragment {
             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                 if ((recordEmail.equals(document.getString("email")) && recordPassword.equals(
                         document.getString("password")) && recordTypeSpinnerValue.equals(
-                        document.getString("category")))) {
+                        document.getString("category"))) && appSpinnerValue.equals(document
+                        .getString("appName"))) {
                     alreadyExist = true;
                     makeSnackbarError(snackbarView, getString(R.string.
                             document_with_inserted_data_already_exist));
@@ -193,6 +196,8 @@ public class InformationFragment extends Fragment {
                 record.put("category", recordTypeSpinnerValue);
                 record.put("email", recordEmail);
                 record.put("password", recordPassword);
+                record.put("appName", appSpinnerValue);
+                record.put("countOfClicks", 0);
                 documentReference.set(record).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -205,6 +210,7 @@ public class InformationFragment extends Fragment {
                         recordEmailEntry.setText("");
                         recordPasswordEntry.setText("");
                         typeSpinner.setSelection(0);
+                        appSpinner.setSelection(0);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
