@@ -18,13 +18,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,13 +34,12 @@ public class PasswordsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseStorage storage;
     private List<Map.Entry<String, Integer>> maxCountOfClicks;
-    private String[] mostPopularAccountsNames;
+    private HashMap<String, String> mostPopularAccountsNames;
     private String currentName;
-    private String[] bannerReferences;
+    private HashMap<String, String> bannerReferences;
     private String currentBannerReference;
     private String currentAppName;
     private View view;
-    private int position;
     private int imagePosition;
 
     @Override
@@ -58,7 +57,6 @@ public class PasswordsFragment extends Fragment {
         //Initializing fstore
         fstore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
 
         maxCountOfClicks = new ArrayList<>();
 
@@ -127,33 +125,38 @@ public class PasswordsFragment extends Fragment {
             Log.d(TAG, " - maxCountOfClicks == 0");
         } else {
             Log.d(TAG, " - maxCountOfClicks != 0");
-            mostPopularAccountsNames = new String[maxCountOfClicks.size()];
-            bannerReferences = new String[maxCountOfClicks.size()];
-            for (int i = 0; i < mostPopularAccountsNames.length; i++) {
-                position = 0;
-                fstore.collection("users").document(mAuth.getCurrentUser().getUid())
-                        .collection("accounts").
-                        whereEqualTo("id", maxCountOfClicks.get(i).getKey()).get().
-                        addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                getRecordInfo(task);
-                            }
-                        });
+            mostPopularAccountsNames = new HashMap<>();
+            bannerReferences = new HashMap<>();
+            for (int i = 0; i < maxCountOfClicks.size(); i++) {
+                findUserById(i);
             }
         }
     }
 
-    private void getRecordInfo(@NonNull Task<QuerySnapshot> task) {
+    private void findUserById(final int position) {
+        fstore.collection("users").document(mAuth.getCurrentUser().getUid())
+                .collection("accounts").
+                whereEqualTo("id", maxCountOfClicks.get(position).getKey()).get().
+                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        Log.d(TAG, maxCountOfClicks.get(position).getKey() + " - current id");
+                        getRecordInfo(task, position);
+                    }
+                });
+    }
+
+    private void getRecordInfo(@NonNull Task<QuerySnapshot> task, int position) {
         Log.d(TAG, " - getting record info");
         if (task.isSuccessful()) {
             for (QueryDocumentSnapshot document : task.getResult()) {
+                Log.d(TAG, document.getString("id") + " - id of record");
+                Log.d(TAG, position + " - position");
                 currentName = document.getString("name");
                 Log.d(TAG, currentName + " - currentName");
-                mostPopularAccountsNames[position] = currentName;
+                mostPopularAccountsNames.put(document.getString("id"), currentName);
                 currentAppName = document.getString("appName");
                 Log.d(TAG, currentAppName + " - currentAppName");
-                Log.d(TAG, position + " - position");
                 Log.d(TAG, "banners/" + currentAppName.toLowerCase() + "Banner.png");
                 fstore.collection("apps").whereEqualTo("name", currentAppName).
                         get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -164,7 +167,6 @@ public class PasswordsFragment extends Fragment {
                         imagePosition++;
                     }
                 });
-                position++;
             }
         }
     }
@@ -174,9 +176,9 @@ public class PasswordsFragment extends Fragment {
             Log.d(TAG, " - getting banner");
             for (QueryDocumentSnapshot document : task.getResult()) {
                 currentBannerReference = document.getString("banner");
-                bannerReferences[imagePosition] = currentBannerReference;
+                bannerReferences.put(document.getString("id"), currentBannerReference);
                 Log.d(TAG, currentBannerReference + " - currentBannerReference");
-                if (imagePosition == mostPopularAccountsNames.length - 1) {
+                if (imagePosition == mostPopularAccountsNames.size() - 1) {
                     setRecycler();
                 }
             }
@@ -184,9 +186,9 @@ public class PasswordsFragment extends Fragment {
     }
 
     private void setRecycler() {
-        Log.d(TAG, Arrays.toString(bannerReferences) + " - bannerReferences");
-        Log.d(TAG, Arrays.toString(mostPopularAccountsNames) + " - mostPopularAccountsNames");
         Log.d(TAG, "Creating recycler");
+        //Sorting maps
+
         RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
         MostPopularAccountsAdapter creditCardAdapter = new MostPopularAccountsAdapter
                 (mostPopularAccountsNames, bannerReferences, getContext());

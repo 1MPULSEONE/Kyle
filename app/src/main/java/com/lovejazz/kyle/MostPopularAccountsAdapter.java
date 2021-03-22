@@ -28,7 +28,7 @@ public class MostPopularAccountsAdapter extends RecyclerView.Adapter<MostPopular
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View cl = (View) LayoutInflater.from(parent.getContext())
+        View cl =  LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.most_popular_acc, parent, false);
         return new ViewHolder(cl);
     }
