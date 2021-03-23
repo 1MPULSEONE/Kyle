@@ -14,12 +14,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.lovejazz.kyle.errors.RegistrationException;
 
 import static com.lovejazz.kyle.EntryUtils.checkAllFieldsAreFilled;
-import static com.lovejazz.kyle.EntryUtils.checkEmailLength;
-import static com.lovejazz.kyle.EntryUtils.checkPasswordLength;
-import static com.lovejazz.kyle.EntryUtils.isValidEmail;
-import static com.lovejazz.kyle.EntryUtils.isValidPassword;
+import static com.lovejazz.kyle.EntryUtils.loginValidateEntries;
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
 public class LoginActivity extends AppCompatActivity {
@@ -63,23 +61,31 @@ public class LoginActivity extends AppCompatActivity {
         fstore = FirebaseFirestore.getInstance();
         //initializing loading dialog
         loadingDialog = new LoadingDialog(LoginActivity.this);
-        if (checkAllFieldsAreFilled(userEmail, userPassword)) {
-            makeSnackbarError(activityView, getString(R.string.error_empty_fields));
-        } else if (!isValidEmail(emailEntry.getText().toString())) {
-            makeSnackbarError(activityView, getString(R.string.
-                    email_error_contains_not_valid_symbols)
-            );
-        } else if (!isValidPassword(passwordEntry.getText().toString())) {
-            makeSnackbarError(activityView, getString(R.string.not_valid_password));
-        } else if (checkEmailLength(userEmail)) {
-            makeSnackbarError(activityView, getString(R.string.error_email_length));
-        } else if (checkPasswordLength(userPassword)) {
-            makeSnackbarError(activityView, getString(R.string.error_password_length));
-        } else {
+        try {
+            loginValidateEntries(userEmail, userPassword);
+
             loadingDialog.startLoadingDialog();
             Log.d(TAG, "Loading dialog started");
             singIn(userEmail, userPassword);
+        } catch (RegistrationException ex) {
+            makeSnackbarError(activityView, ex.getErrorCode().getErrorMessage());
         }
+
+//        if (checkAllFieldsAreFilled(userEmail, userPassword)) {
+//            makeSnackbarError(activityView, getString(R.string.error_empty_fields));
+//        } else if (!validateEmail(emailEntry.getText().toString())) {
+//            makeSnackbarError(activityView, getString(R.string.
+//                    email_error_contains_not_valid_symbols)
+//            );
+//        } else if (!isValidPassword(passwordEntry.getText().toString())) {
+//            makeSnackbarError(activityView, getString(R.string.not_valid_password));
+//        } else if (checkEmailLength(userEmail)) {
+//            makeSnackbarError(activityView, getString(R.string.error_email_length));
+//        } else if (checkPasswordLength(userPassword)) {
+//            makeSnackbarError(activityView, getString(R.string.error_password_length));
+//        } else {
+//
+//        }
     }
 
     private void singIn(String email, String password) {

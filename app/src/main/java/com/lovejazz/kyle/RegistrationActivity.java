@@ -19,19 +19,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.lovejazz.kyle.errors.RegistrationException;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.lovejazz.kyle.EntryUtils.registrationValidateEntries;
 import static com.lovejazz.kyle.EntryUtils.checkAllFieldsAreFilled;
-import static com.lovejazz.kyle.EntryUtils.checkEmailLength;
-import static com.lovejazz.kyle.EntryUtils.checkIfPasswordEqual;
-import static com.lovejazz.kyle.EntryUtils.checkLoginLength;
-import static com.lovejazz.kyle.EntryUtils.checkPasswordLength;
-import static com.lovejazz.kyle.EntryUtils.isValidEmail;
-import static com.lovejazz.kyle.EntryUtils.isValidLogin;
-import static com.lovejazz.kyle.EntryUtils.isValidPassword;
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
 //TODO Debug registration
@@ -44,11 +39,12 @@ public class RegistrationActivity extends AppCompatActivity {
     private String userPassword;
     private LoadingDialog loadingDialog;
 
+
     FirebaseAuth mAuth;
     FirebaseFirestore fstore;
     private View activityView;
 
-    private static final String TAG = "RegistrationActivity";
+    private static final String TAG = "Entries";
 
 
     @Override
@@ -76,29 +72,12 @@ public class RegistrationActivity extends AppCompatActivity {
         loadingDialog = new LoadingDialog(RegistrationActivity.this);
         fstore = FirebaseFirestore.getInstance();
         //Checking if empty fields exist
-        if (checkAllFieldsAreFilled(userLogin, userEmail, userPassword, userRepeatedPassword)) {
-            makeSnackbarError(activityView, getString(R.string.error_empty_fields));
-            //Checking if password equals repeated password
-        } else if (!checkIfPasswordEqual(userPassword, userRepeatedPassword)) {
-            makeSnackbarError(activityView, getString(R.string.error_passwords_dont_equal));
-            //Checking if login length is okay
-        } else if (checkLoginLength(userEmail)) {
-            makeSnackbarError(activityView, getString(R.string.error_login_length));
-            //Checking if password length is okay
-        } else if (checkPasswordLength(userPassword)) {
-            makeSnackbarError(activityView, getString(R.string.error_password_length));
-            //Checking if email length is okay
-        } else if (checkEmailLength(userEmail)) {
-            makeSnackbarError(activityView, getString(R.string.error_email_length));
-            //Checking if text in fields are valid
-        } else if (!isValidEmail(userEmail)) {
-            makeSnackbarError(activityView, getString(R.string.error_contains_not_valid_symbols));
-        } else if (!isValidLogin(userLogin)) {
-            makeSnackbarError(activityView, getString(R.string.email_error_contains_not_valid_symbols));
-        } else if (!isValidPassword(userPassword)) {
-            makeSnackbarError(activityView, getString(R.string.not_valid_password));
-        } else {
+
+        try {
+            registrationValidateEntries(userLogin, userEmail, userPassword, userRepeatedPassword);
+
             loadingDialog.startLoadingDialog();
+            Log.d(TAG, "registration is starting");
             fstore.collection("users")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -107,7 +86,12 @@ public class RegistrationActivity extends AppCompatActivity {
                             createUser(task);
                         }
                     });
+
+        }catch (RegistrationException ex) {
+            makeSnackbarError(activityView, ex.getErrorCode().getErrorMessage());
         }
+
+
     }
 
     public void onArrowButtonClicked(View view) {

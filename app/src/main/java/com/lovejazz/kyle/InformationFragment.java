@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.lovejazz.kyle.errors.RegistrationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.lovejazz.kyle.EntryUtils.checkAllFieldsAreFilled;
-import static com.lovejazz.kyle.EntryUtils.isValidEmail;
+import static com.lovejazz.kyle.EntryUtils.createNotationValidateEntries;
+import static com.lovejazz.kyle.EntryUtils.validateEmail;
 import static com.lovejazz.kyle.EntryUtils.isValidName;
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
@@ -145,13 +147,10 @@ public class InformationFragment extends Fragment {
         recordPassword = recordPasswordEntry.getText().toString();
         recordTypeSpinnerValue = typeSpinner.getSelectedItem().toString();
         appSpinnerValue = appSpinner.getSelectedItem().toString();
-        if (checkAllFieldsAreFilled(recordName, recordEmail, recordPassword)) {
-            makeSnackbarError(view, getString(R.string.error_empty_fields));
-        } else if (!isValidEmail(recordEmail)) {
-            makeSnackbarError(view, getString(R.string.email_error_contains_not_valid_symbols));
-        } else if (!isValidName(recordName)) {
-            makeSnackbarError(view, getString(R.string.name_error_not_valid));
-        } else {
+
+        try {
+            createNotationValidateEntries(recordEmail, recordName, recordPassword);
+
             loadingDialog.startLoadingDialog();
             fstore.collection("users").
                     document(Objects.requireNonNull(mAuth.getCurrentUser())
@@ -162,8 +161,10 @@ public class InformationFragment extends Fragment {
                             createRecord(task);
                         }
                     });
-
+        } catch (RegistrationException ex) {
+            makeSnackbarError(view, ex.getErrorCode().getErrorMessage());
         }
+
     }
 
     private void createRecord(Task<QuerySnapshot> task) {
