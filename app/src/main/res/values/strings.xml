@@ -71,6 +71,7 @@
     <string name="error_contains_not_valid_symbols">Логин содержит не поддерживаемые символы!
     </string>
     <string name="some_problem_occurred">Возникла непредвиденная ошибка!</string>
+    <string name="unexpected_error_try_later">Непредвиденная ошибка, попробуйте позже</string>
     <string name="not_valid_password">Пароль должен содержать как минимум одини символ
         верхнего регистра!
     </string>

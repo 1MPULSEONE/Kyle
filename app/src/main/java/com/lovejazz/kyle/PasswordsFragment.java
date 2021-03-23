@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
+
 public class PasswordsFragment extends Fragment {
     private static final String TAG = "PasswordsFragment";
     private FirebaseFirestore fstore;
@@ -39,8 +43,8 @@ public class PasswordsFragment extends Fragment {
     private TreeMap<String, String> bannerReferences;
     private String currentBannerReference;
     private String currentAppName;
-    private List<Integer> positionsList;
     private View view;
+    private List<Category> categoriesList;
     private int imagePosition;
 
     @Override
@@ -60,7 +64,6 @@ public class PasswordsFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
 
         maxCountOfClicks = new ArrayList<>();
-
         //Getting maxCountOfClicks
         fstore.collection("users").
                 document(mAuth.getCurrentUser().getUid()).collection("accounts").get()
@@ -96,32 +99,39 @@ public class PasswordsFragment extends Fragment {
                                 Collections.reverse(maxCountOfClicks);
                             }
                             Log.d(TAG, maxCountOfClicks + " - maxCountOfClicks");
+                            //Setting most popular accounts recycleView
                             createPopularAccountsRecyclerView();
                         }
                     }
                 });
-//        //Connecting credit card`s RecyclerView
-//        RecyclerView accountRecycler = view.findViewById(R.id.account_recycler);
-//        String[] accountsName = new String[Account.accounts.length];
-//        for (int i = 0; i < accountsName.length; i++) {
-//            accountsName[i] = Account.accounts[i].getName();
-//        }
-//        String[] accountsLogins = new String[Account.accounts.length];
-//        for (int i = 0; i < accountsLogins.length; i++) {
-//            accountsLogins[i] = Account.accounts[i].getLogin();
-//        }
-//        int[] imageId = new int[Account.accounts.length];
-//        for (int i = 0; i < imageId.length; i++) {
-//            imageId[i] = Account.accounts[i].getImageId();
-//        }
-//        AccountAdapter accountAdapter = new AccountAdapter(accountsName, accountsLogins, imageId);
-//        accountRecycler.setAdapter(accountAdapter);
-//        LinearLayoutManager accountManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
-//        accountRecycler.setLayoutManager(accountManager);
+        categoriesList = new ArrayList<>();
+        //Getting categories from firestore
+        fstore.collection("categories").get().
+                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String name = document.getString("name");
+                                String linkToIcon = document.getString("icon");
+                                String linkToBackgroundImage = document.getString("background");
+                                categoriesList.add(new Category(name, linkToIcon, linkToBackgroundImage));
+                            }
+                            setCategoriesRecycler(categoriesList);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeSnackbarError(view, getResources().getString(R.string.unexpected_error_try_later));
+            }
+        });
+
         return view;
     }
 
     private void createPopularAccountsRecyclerView() {
+        //Check if user have records
         if (maxCountOfClicks.size() == 0) {
             Log.d(TAG, " - maxCountOfClicks == 0");
         } else {
@@ -129,6 +139,7 @@ public class PasswordsFragment extends Fragment {
             mostPopularAccountsNames = new TreeMap<>();
             bannerReferences = new TreeMap<>();
             for (int i = 0; i < maxCountOfClicks.size(); i++) {
+                //Asking for user document
                 findUserById(i);
             }
         }
@@ -164,7 +175,7 @@ public class PasswordsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         Log.d(TAG, imagePosition + " - imagePosition");
-                        getBanner(task,document.getString("id"));
+                        getBanner(task, document.getString("id"));
                         imagePosition++;
                     }
                 });
@@ -177,19 +188,19 @@ public class PasswordsFragment extends Fragment {
             Log.d(TAG, " - getting banner");
             for (QueryDocumentSnapshot document : task.getResult()) {
                 currentBannerReference = document.getString("banner");
-                bannerReferences.put(id , currentBannerReference);
+                bannerReferences.put(id, currentBannerReference);
                 Log.d(TAG, currentBannerReference + " - currentBannerReference");
                 if (imagePosition == mostPopularAccountsNames.size() - 1) {
-                    setRecycler();
+                    setMostPopularAccountsRecycler();
                 }
             }
         }
     }
 
-    private void setRecycler() {
+    private void setMostPopularAccountsRecycler() {
         Log.d(TAG, "Creating recycler");
-        //Sorting maps
         Log.d(TAG, bannerReferences.toString() + " - bannerReferences");
+        //Sorting data from documents
         sortMaps();
         String[] accountNamesArray = new String[mostPopularAccountsNames.size()];
         String[] bannersArray = new String[bannerReferences.size()];
@@ -223,7 +234,27 @@ public class PasswordsFragment extends Fragment {
         }
         mostPopularAccountsNames = accountNamesBufferedHashMap;
         bannerReferences = bannersBufferedHashMap;
+    }
 
+    private void setCategoriesRecycler(List<Category> categoriesList) {
+        String[] categoryNames = new String[categoriesList.size()];
+        String[] linksToIcons = new String[categoriesList.size()];
+        String[] linkToBackgroundImages = new String[categoriesList.size()];
+        for (int i = 0; i < categoriesList.size(); i++) {
+            String name = categoriesList.get(i).getName();
+            categoryNames[i] = name;
+            String linkToIcon = categoriesList.get(i).getLinkToIcon();
+            linksToIcons[i] = linkToIcon;
+            String linkToBackgroundImage = categoriesList.get(i).getLinkToBackgroundImage();
+            linkToBackgroundImages[i] = linkToBackgroundImage;
+        }
+        RecyclerView recyclerView = view.findViewById(R.id.categories_recycler);
+        CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), categoryNames,
+                linksToIcons, linkToBackgroundImages);
+        recyclerView.setAdapter(categoryAdapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
+                2, GridLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(gridLayoutManager);
     }
 
 }
