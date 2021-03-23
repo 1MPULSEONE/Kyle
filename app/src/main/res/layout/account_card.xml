@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="4dp">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="15dp">
+
         <ImageView
             android:id="@+id/account_logo"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/gmail_logo"
+            android:contentDescription="@string/account_logo"
             android:padding="5dp"
-            android:contentDescription="@string/account_logo" />
+            android:src="@drawable/gmail_logo" />
 
         <TextView
             android:id="@+id/account_name"
@@ -25,8 +26,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
             android:layout_toEndOf="@+id/account_logo"
-            android:text="@string/account_name"
             android:fontFamily="@font/montserrat_extrabold"
+            android:text="@string/account_name"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold" />
