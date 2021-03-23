@@ -25,8 +25,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class PasswordsFragment extends Fragment {
     private static final String TAG = "PasswordsFragment";
@@ -34,9 +36,10 @@ public class PasswordsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseStorage storage;
     private List<Map.Entry<String, Integer>> maxCountOfClicks;
-    private HashMap<String, String> mostPopularAccountsNames;
+    private List<String> bufferedStingsArray;
+    private TreeMap<String, String> mostPopularAccountsNames;
     private String currentName;
-    private HashMap<String, String> bannerReferences;
+    private TreeMap<String, String> bannerReferences;
     private String currentBannerReference;
     private String currentAppName;
     private View view;
@@ -188,13 +191,44 @@ public class PasswordsFragment extends Fragment {
     private void setRecycler() {
         Log.d(TAG, "Creating recycler");
         //Sorting maps
+        // Код, от которого воняет
+        sortMaps();
+        String[] accountNamesArray = new String[mostPopularAccountsNames.size()];
+        String[] bannersArray = new String[bannerReferences.size()];
 
+        for (int i = 0; i < bufferedStingsArray.size(); i++) {
+            accountNamesArray[i] = mostPopularAccountsNames.get(bufferedStingsArray.get(i));
+            bannersArray[i] = bannerReferences.get(bufferedStingsArray.get(i));
+        }
+
+
+        // Конец кода, от которого воняет
         RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
         MostPopularAccountsAdapter creditCardAdapter = new MostPopularAccountsAdapter
-                (mostPopularAccountsNames, bannerReferences, getContext());
+                (accountNamesArray, bannersArray, getContext());
         creditRecycler.setAdapter(creditCardAdapter);
         LinearLayoutManager cardManager = new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
         creditRecycler.setLayoutManager(cardManager);
     }
+
+    private void sortMaps(){
+        bufferedStingsArray = new ArrayList<>();
+        TreeMap<String, String> accountNamesBufferedHashMap = new TreeMap<>();
+        TreeMap<String, String> bannersBufferedHashMap = new TreeMap<>();
+        for (Map.Entry<String, Integer> entry : maxCountOfClicks) {
+            bufferedStingsArray.add(entry.getKey());
+        }
+        for (int i = 0; i < bufferedStingsArray.size(); i++){
+            accountNamesBufferedHashMap.put(bufferedStingsArray.get(i),
+                    mostPopularAccountsNames.get(bufferedStingsArray.get(i)));
+            bannersBufferedHashMap.put(bufferedStingsArray.get(i),
+                    bannerReferences.get(bufferedStingsArray.get(i)));
+
+        }
+        mostPopularAccountsNames = accountNamesBufferedHashMap;
+        bannerReferences = bannersBufferedHashMap;
+
+    }
+
 }
