@@ -1,16 +1,13 @@
 package com.lovejazz.kyle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.Objects;
 
 public class MainRegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -31,12 +28,6 @@ public class MainRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_register);
-        //Deleting toolbar
-        try {
-            Objects.requireNonNull(this.getSupportActionBar()).hide();
-        } catch (NullPointerException e) {
-            Log.d("MainRegisterActivity", "Toolbar produced null pointer exception");
-        }
         mAuth = FirebaseAuth.getInstance();
     }
 

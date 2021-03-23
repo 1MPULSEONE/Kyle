@@ -21,11 +21,8 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -42,6 +39,7 @@ public class PasswordsFragment extends Fragment {
     private TreeMap<String, String> bannerReferences;
     private String currentBannerReference;
     private String currentAppName;
+    private List<Integer> positionsList;
     private View view;
     private int imagePosition;
 
@@ -128,8 +126,8 @@ public class PasswordsFragment extends Fragment {
             Log.d(TAG, " - maxCountOfClicks == 0");
         } else {
             Log.d(TAG, " - maxCountOfClicks != 0");
-            mostPopularAccountsNames = new HashMap<>();
-            bannerReferences = new HashMap<>();
+            mostPopularAccountsNames = new TreeMap<>();
+            bannerReferences = new TreeMap<>();
             for (int i = 0; i < maxCountOfClicks.size(); i++) {
                 findUserById(i);
             }
@@ -152,7 +150,7 @@ public class PasswordsFragment extends Fragment {
     private void getRecordInfo(@NonNull Task<QuerySnapshot> task, int position) {
         Log.d(TAG, " - getting record info");
         if (task.isSuccessful()) {
-            for (QueryDocumentSnapshot document : task.getResult()) {
+            for (final QueryDocumentSnapshot document : task.getResult()) {
                 Log.d(TAG, document.getString("id") + " - id of record");
                 Log.d(TAG, position + " - position");
                 currentName = document.getString("name");
@@ -166,7 +164,7 @@ public class PasswordsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         Log.d(TAG, imagePosition + " - imagePosition");
-                        getBanner(task);
+                        getBanner(task,document.getString("id"));
                         imagePosition++;
                     }
                 });
@@ -174,12 +172,12 @@ public class PasswordsFragment extends Fragment {
         }
     }
 
-    private void getBanner(@NonNull Task<QuerySnapshot> task) {
+    private void getBanner(@NonNull Task<QuerySnapshot> task, String id) {
         if (task.isSuccessful()) {
             Log.d(TAG, " - getting banner");
             for (QueryDocumentSnapshot document : task.getResult()) {
                 currentBannerReference = document.getString("banner");
-                bannerReferences.put(document.getString("id"), currentBannerReference);
+                bannerReferences.put(id , currentBannerReference);
                 Log.d(TAG, currentBannerReference + " - currentBannerReference");
                 if (imagePosition == mostPopularAccountsNames.size() - 1) {
                     setRecycler();
@@ -191,7 +189,7 @@ public class PasswordsFragment extends Fragment {
     private void setRecycler() {
         Log.d(TAG, "Creating recycler");
         //Sorting maps
-        // Код, от которого воняет
+        Log.d(TAG, bannerReferences.toString() + " - bannerReferences");
         sortMaps();
         String[] accountNamesArray = new String[mostPopularAccountsNames.size()];
         String[] bannersArray = new String[bannerReferences.size()];
@@ -200,9 +198,6 @@ public class PasswordsFragment extends Fragment {
             accountNamesArray[i] = mostPopularAccountsNames.get(bufferedStingsArray.get(i));
             bannersArray[i] = bannerReferences.get(bufferedStingsArray.get(i));
         }
-
-
-        // Конец кода, от которого воняет
         RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
         MostPopularAccountsAdapter creditCardAdapter = new MostPopularAccountsAdapter
                 (accountNamesArray, bannersArray, getContext());
@@ -212,14 +207,14 @@ public class PasswordsFragment extends Fragment {
         creditRecycler.setLayoutManager(cardManager);
     }
 
-    private void sortMaps(){
+    private void sortMaps() {
         bufferedStingsArray = new ArrayList<>();
         TreeMap<String, String> accountNamesBufferedHashMap = new TreeMap<>();
         TreeMap<String, String> bannersBufferedHashMap = new TreeMap<>();
         for (Map.Entry<String, Integer> entry : maxCountOfClicks) {
             bufferedStingsArray.add(entry.getKey());
         }
-        for (int i = 0; i < bufferedStingsArray.size(); i++){
+        for (int i = 0; i < bufferedStingsArray.size(); i++) {
             accountNamesBufferedHashMap.put(bufferedStingsArray.get(i),
                     mostPopularAccountsNames.get(bufferedStingsArray.get(i)));
             bannersBufferedHashMap.put(bufferedStingsArray.get(i),
