@@ -33,10 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.lovejazz.kyle.EntryUtils.checkAllFieldsAreFilled;
 import static com.lovejazz.kyle.EntryUtils.createNotationValidateEntries;
-import static com.lovejazz.kyle.EntryUtils.validateEmail;
-import static com.lovejazz.kyle.EntryUtils.isValidName;
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
 

@@ -4,11 +4,13 @@ public class Category {
     private String name;
     private String linkToIcon;
     private String linkToBackgroundImage;
+    private String id;
 
-    public Category(String name, String linkToIcon, String linkToBackgroundImage) {
+    public Category(String name, String linkToIcon, String linkToBackgroundImage, String id) {
         this.name = name;
         this.linkToIcon = linkToIcon;
         this.linkToBackgroundImage = linkToBackgroundImage;
+        this.id = id;
     }
 
     public String getName() {
@@ -21,6 +23,10 @@ public class Category {
 
     public String getLinkToBackgroundImage() {
         return linkToBackgroundImage;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setName(String name) {
