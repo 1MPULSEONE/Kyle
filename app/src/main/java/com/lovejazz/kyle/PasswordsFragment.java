@@ -1,5 +1,6 @@
 package com.lovejazz.kyle;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -31,11 +31,10 @@ import java.util.TreeMap;
 
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
-public class PasswordsFragment extends Fragment {
-    private static final String TAG = "PasswordsFragment";
+public class PasswordsFragment extends Fragment implements RecyclerViewClickInterface {
+    private static final String TAG = "c";
     private FirebaseFirestore fstore;
     private FirebaseAuth mAuth;
-    private FirebaseStorage storage;
     private List<Map.Entry<String, Integer>> maxCountOfClicks;
     private List<String> bufferedStingsArray;
     private TreeMap<String, String> mostPopularAccountsNames;
@@ -61,7 +60,6 @@ public class PasswordsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         //Initializing fstore
         fstore = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
 
         maxCountOfClicks = new ArrayList<>();
         //Getting maxCountOfClicks
@@ -115,7 +113,8 @@ public class PasswordsFragment extends Fragment {
                                 String name = document.getString("name");
                                 String linkToIcon = document.getString("icon");
                                 String linkToBackgroundImage = document.getString("background");
-                                categoriesList.add(new Category(name, linkToIcon, linkToBackgroundImage));
+                                categoriesList.add
+                                        (new Category(name, linkToIcon, linkToBackgroundImage));
                             }
                             setCategoriesRecycler(categoriesList);
                         }
@@ -250,11 +249,19 @@ public class PasswordsFragment extends Fragment {
         }
         RecyclerView recyclerView = view.findViewById(R.id.categories_recycler);
         CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), categoryNames,
-                linksToIcons, linkToBackgroundImages);
+                linksToIcons, linkToBackgroundImages, this);
         recyclerView.setAdapter(categoryAdapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
                 2, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
     }
 
+    @Override
+    public void onItemClick(int position) {
+        String categoryName = categoriesList.get(position).getName();
+        Log.d(TAG, position + " - position");
+        Intent intentToCategoryActivity = new Intent(getContext(), CategoryActivity.class);
+        intentToCategoryActivity.putExtra("categoryName", categoryName);
+        startActivity(intentToCategoryActivity);
+    }
 }

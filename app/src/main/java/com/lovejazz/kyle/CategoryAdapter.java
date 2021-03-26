@@ -16,13 +16,22 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     private String[] titles;
     private String[] linksToIcons;
     private String[] linksToBackgroundImages;
+    private RecyclerViewClickInterface recyclerViewClickInterface;
     Context context;
 
-    public CategoryAdapter(Context context, String[] titles, String[] linksToIcons, String[] linksToBackgroundImages) {
+    public interface onClickListener {
+        void onVariantClick(Category category);
+    }
+
+    private onClickListener listener;
+
+    public CategoryAdapter(Context context, String[] titles, String[] linksToIcons,
+                           String[] linksToBackgroundImages, RecyclerViewClickInterface recyclerViewClickInterface) {
         this.titles = titles;
         this.linksToIcons = linksToIcons;
         this.linksToBackgroundImages = linksToBackgroundImages;
         this.context = context;
+        this.recyclerViewClickInterface = recyclerViewClickInterface;
     }
 
     //This methods is used, when RecycleView requires new ViewHolder object.
@@ -35,8 +44,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CategoryAdapter.ViewHolder holder, final int position) {
         View categoryView = holder.cardView;
+        categoryView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerViewClickInterface.onItemClick(position);
+            }
+        });
         TextView categoryTitle = categoryView.findViewById(R.id.category_title);
         ImageView backgroundImage = categoryView.findViewById(R.id.category_background);
         ImageView iconImage = categoryView.findViewById(R.id.category_icon);
@@ -57,7 +72,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     //ViewHolder class, which connect cardView with RecyclerView.
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private View cardView;
 
         public ViewHolder(@NonNull View card) {
@@ -65,4 +80,5 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             cardView = card;
         }
     }
+
 }
