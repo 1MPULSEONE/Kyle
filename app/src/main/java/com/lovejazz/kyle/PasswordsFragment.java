@@ -31,7 +31,7 @@ import java.util.TreeMap;
 
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
-public class PasswordsFragment extends Fragment implements CategoryAdapter.OnCategoryListener {
+public class PasswordsFragment extends Fragment implements RecyclerViewClickInterface {
     private static final String TAG = "c";
     private FirebaseFirestore fstore;
     private FirebaseAuth mAuth;
@@ -110,12 +110,11 @@ public class PasswordsFragment extends Fragment implements CategoryAdapter.OnCat
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String id = document.getString("id");
                                 String name = document.getString("name");
                                 String linkToIcon = document.getString("icon");
                                 String linkToBackgroundImage = document.getString("background");
                                 categoriesList.add
-                                        (new Category(name, linkToIcon, linkToBackgroundImage, id));
+                                        (new Category(name, linkToIcon, linkToBackgroundImage));
                             }
                             setCategoriesRecycler(categoriesList);
                         }
@@ -258,11 +257,11 @@ public class PasswordsFragment extends Fragment implements CategoryAdapter.OnCat
     }
 
     @Override
-    public void onItemClicked(int position) {
-        String itemID = categoriesList.get(position).getId();
+    public void onItemClick(int position) {
+        String categoryName = categoriesList.get(position).getName();
         Log.d(TAG, position + " - position");
         Intent intentToCategoryActivity = new Intent(getContext(), CategoryActivity.class);
-        intentToCategoryActivity.putExtra("itemID", itemID);
+        intentToCategoryActivity.putExtra("categoryName", categoryName);
         startActivity(intentToCategoryActivity);
     }
 }

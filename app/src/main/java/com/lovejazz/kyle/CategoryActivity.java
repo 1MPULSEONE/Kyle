@@ -7,7 +7,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class CategoryActivity extends AppCompatActivity {
-    private String itemID;
+    private String categoryName;
     private static final String TAG = "CategoryActivity";
 
     @Override
@@ -16,7 +16,7 @@ public class CategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_category);
         //Getting extra from PasswordsFragment
         Intent intentFromPasswordsFragment = getIntent();
-        itemID = intentFromPasswordsFragment.getStringExtra("itemID");
-        Log.d(TAG, itemID + " - itemID");
+        categoryName = intentFromPasswordsFragment.getStringExtra("categoryName");
+        Log.d(TAG, categoryName + " - categoryName");
     }
 }
