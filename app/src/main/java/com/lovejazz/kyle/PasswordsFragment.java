@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
+import com.lovejazz.kyle.adapters.CategoryAdapter;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -32,10 +32,9 @@ import java.util.TreeMap;
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
 public class PasswordsFragment extends Fragment {
-    private static final String TAG = "PasswordsFragment";
+    private static final String TAG = "c";
     private FirebaseFirestore fstore;
     private FirebaseAuth mAuth;
-    private FirebaseStorage storage;
     private List<Map.Entry<String, Integer>> maxCountOfClicks;
     private List<String> bufferedStingsArray;
     private TreeMap<String, String> mostPopularAccountsNames;
@@ -61,7 +60,6 @@ public class PasswordsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         //Initializing fstore
         fstore = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
 
         maxCountOfClicks = new ArrayList<>();
         //Getting maxCountOfClicks
@@ -115,7 +113,8 @@ public class PasswordsFragment extends Fragment {
                                 String name = document.getString("name");
                                 String linkToIcon = document.getString("icon");
                                 String linkToBackgroundImage = document.getString("background");
-                                categoriesList.add(new Category(name, linkToIcon, linkToBackgroundImage));
+                                categoriesList.add
+                                        (new Category(name, linkToIcon, linkToBackgroundImage));
                             }
                             setCategoriesRecycler(categoriesList);
                         }
@@ -252,9 +251,7 @@ public class PasswordsFragment extends Fragment {
         CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), categoryNames,
                 linksToIcons, linkToBackgroundImages);
         recyclerView.setAdapter(categoryAdapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
-                2, GridLayoutManager.VERTICAL, false);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
     }
-
 }
