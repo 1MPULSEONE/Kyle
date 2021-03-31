@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.lovejazz.kyle.EntryUtils.registrationValidateEntries;
-import static com.lovejazz.kyle.EntryUtils.checkAllFieldsAreFilled;
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
 //TODO Debug registration

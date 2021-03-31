@@ -15,7 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.lovejazz.kyle.CategoryActivity;
+import com.lovejazz.kyle.activities.CategoryActivity;
 import com.lovejazz.kyle.R;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
