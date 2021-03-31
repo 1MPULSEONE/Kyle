@@ -3,20 +3,17 @@ package com.lovejazz.kyle;
 import android.util.Log;
 import android.view.View;
 
-
 import com.google.android.material.snackbar.Snackbar;
 import com.lovejazz.kyle.errors.RegistrationErrorCode;
 import com.lovejazz.kyle.errors.RegistrationException;
 
 import java.util.regex.Pattern;
 
-import static com.lovejazz.kyle.EntryUtils.checkAllFieldsAreFilled;
-
 public abstract class EntryUtils {
 
     private static final String TAG = "Entries";
 
-    static void makeSnackbarError(View view, String error) {
+    public static void makeSnackbarError(View view, String error) {
         Snackbar
                 .make(
                         view,
@@ -97,15 +94,15 @@ public abstract class EntryUtils {
     }
 
     static void checkEmailLength(String email) throws RegistrationException {
-        if (email.length() > 254 || email.length() < 3){
+        if (email.length() > 254 || email.length() < 3) {
             throw new RegistrationException(RegistrationErrorCode.WRONG_PASSWORD_LENGTH);
         }
     }
 
 
-    static void checkPasswordLength(String password) throws RegistrationException{
+    static void checkPasswordLength(String password) throws RegistrationException {
 
-        if ( password.length() >= 18 || password.length() <= 8) {
+        if (password.length() >= 18 || password.length() <= 8) {
             throw new RegistrationException(RegistrationErrorCode.WRONG_PASSWORD);
         }
 
@@ -124,7 +121,7 @@ public abstract class EntryUtils {
             userPassword, String userPasswordRepeatEntry) throws RegistrationException {
 
         if (userLogin.isEmpty() || userEmail.isEmpty() || userPassword.isEmpty() ||
-                userPasswordRepeatEntry.isEmpty()){
+                userPasswordRepeatEntry.isEmpty()) {
             throw new RegistrationException(RegistrationErrorCode.EMPTY_FIELDS);
 
         }
