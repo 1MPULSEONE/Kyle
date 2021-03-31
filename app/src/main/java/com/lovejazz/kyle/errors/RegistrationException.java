@@ -1,7 +1,5 @@
 package com.lovejazz.kyle.errors;
 
-import androidx.annotation.Nullable;
-
 public class RegistrationException extends Exception {
 
     private final RegistrationErrorCode errorCode;
