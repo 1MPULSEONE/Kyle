@@ -182,7 +182,7 @@ public class PasswordsFragment extends Fragment {
     }
 
     private void getBanner(@NonNull Task<QuerySnapshot> task, String id) {
-        if (task.isSuccessful()) {
+        if (task.isSuccessful() ) {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 currentBannerReference = document.getString("banner");
                 bannerReferences.put(id, currentBannerReference);
