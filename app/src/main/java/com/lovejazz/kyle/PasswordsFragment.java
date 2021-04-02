@@ -220,24 +220,12 @@ public class PasswordsFragment extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d(TAG, "Detach");
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView");
         mostPopularAccountsNames = null;
         bannerReferences = null;
         imagePosition = 0;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
     }
 
 
