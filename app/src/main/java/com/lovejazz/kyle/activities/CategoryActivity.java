@@ -47,7 +47,7 @@ public class CategoryActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         accountsRecyclerView.setLayoutManager(layoutManager);
-        final AccountAdapter accountAdapter = new AccountAdapter(accountsArrayList);
+        final AccountAdapter accountAdapter = new AccountAdapter(accountsArrayList, this);
         accountsRecyclerView.setAdapter(accountAdapter);
         fstore.collection("users").document(Objects.requireNonNull(mAuth.getUid())).
                 collection("accounts").whereEqualTo("category", categoryName)
@@ -59,6 +59,7 @@ public class CategoryActivity extends AppCompatActivity {
                         final String accountName = document.getString("name");
                         final String email = document.getString("email");
                         String appName = document.getString("appName");
+                        final String id = document.getString("id");
                         fstore.collection("apps").
                                 whereEqualTo("name", appName).get().
                                 addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -68,8 +69,10 @@ public class CategoryActivity extends AppCompatActivity {
                                             for (QueryDocumentSnapshot documentSnapshot :
                                                     task.getResult()) {
                                                 Log.d(TAG, "onComplete: i am here!");
-                                                String iconLink = documentSnapshot.getString("icon");
-                                                accountsArrayList.add(new Account(accountName, email, iconLink));
+                                                String iconLink = documentSnapshot.getString(
+                                                        "icon");
+                                                accountsArrayList.add(new Account(accountName,
+                                                        email, iconLink, id));
                                                 accountAdapter.notifyDataSetChanged();
                                             }
                                         }

@@ -4,11 +4,13 @@ public class Account {
     private String name;
     private String email;
     private String iconLink;
+    private String id;
 
-    public Account(String name, String email, String iconLink) {
+    public Account(String name, String email, String iconLink, String id) {
         this.name = name;
         this.email = email;
         this.iconLink = iconLink;
+        this.id = id;
     }
 
     public String getName() {
@@ -23,15 +25,11 @@ public class Account {
         return iconLink;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getId() {
+        return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setIconLink(String iconLink) {
-        this.iconLink = iconLink;
+    public void setId(String id) {
+        this.id = id;
     }
 }

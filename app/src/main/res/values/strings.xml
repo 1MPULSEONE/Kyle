@@ -111,4 +111,11 @@
     <string name="most_popular">Наиболее популярные</string>
     <string name="categories">Категории</string>
     <string name="hello_world">Hello world!</string>
+    <!--activity_account.xml strings-->
+    <string name="account_icon">account_icon</string>
+    <string name="example_account_name">Example account name</string>
+    <string name="example_account_email">ExampleEmail@gmail.com</string>
+    <string name="example_name">Example name</string>
+    <string name="name">Name</string>
+    <string name="password_hint">Password</string>
 </resources>
