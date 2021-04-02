@@ -1,28 +1,31 @@
 package com.lovejazz.kyle.adapters;
 
-import android.graphics.drawable.Drawable;
+import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.lovejazz.kyle.Account;
 import com.lovejazz.kyle.R;
+import com.lovejazz.kyle.activities.CategoryActivity;
+
+import java.util.List;
 
 public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHolder> {
-    private String[] names;
-    private String[] login;
-    private int[] imageId;
+    private List<Account> accountsArrayList;
+    private Activity activity;
 
-    public AccountAdapter(String[] names, String[] login, int[] imageId) {
-        this.names = names;
-        this.login = login;
-        this.imageId = imageId;
+    public AccountAdapter(List<Account> accountsArrayList, CategoryActivity activity) {
+        this.accountsArrayList = accountsArrayList;
+        this.activity = activity;
     }
 
     //This methods is used, when RecycleView requires new ViewHolder object.
@@ -36,22 +39,30 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
 
     //This method is used, when RecyclerView shows our data.
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CardView  accountCardView = holder.cardView;
-        ImageView imageView = accountCardView.findViewById(R.id.account_logo);
-        Drawable accountLogo = ContextCompat.getDrawable(accountCardView.getContext(),
-                imageId[position]);
-        imageView.setImageDrawable(accountLogo);
-        imageView.setContentDescription(names[position]);
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        CardView accountCardView = holder.cardView;
         TextView accountName = accountCardView.findViewById(R.id.account_name);
-        accountName.setText(names[position]);
-        TextView accountLogin = accountCardView.findViewById(R.id.account_login);
-        accountLogin.setText(login[position]);
+        TextView accountEmail = accountCardView.findViewById(R.id.account_email);
+        accountName.setText(accountsArrayList.get(position).getName());
+        accountEmail.setText(accountsArrayList.get(position).getEmail());
+        ImageView accountIcon = accountCardView.findViewById(R.id.account_icon);
+        Glide.with(accountCardView)
+                .load(accountsArrayList.get(position).getIconLink())
+                .into(accountIcon);
+        accountIcon.setContentDescription(accountsArrayList.get(position).getName());
+        accountCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity, AccountActivity.class);
+                activity.startActivity(intent);
+                intent.putExtra("ID",accountsArrayList.get(position).getId());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return Account.accounts.length;
+        return accountsArrayList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

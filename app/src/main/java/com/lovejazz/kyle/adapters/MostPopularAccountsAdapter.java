@@ -1,4 +1,4 @@
-package com.lovejazz.kyle;
+package com.lovejazz.kyle.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.lovejazz.kyle.R;
 
 public class MostPopularAccountsAdapter extends RecyclerView.Adapter<MostPopularAccountsAdapter.ViewHolder> {
     private String[] names;
