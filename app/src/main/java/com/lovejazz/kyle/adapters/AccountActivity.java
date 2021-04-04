@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -29,6 +31,8 @@ public class AccountActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore fstore;
     private ImageView appIcon;
+    private TextView accountName;
+    private TextView accountEmail;
     private EditText nameEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -45,6 +49,8 @@ public class AccountActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.password_edit_text);
         categorySpinner = findViewById(R.id.spinner_category);
         appSpinner = findViewById(R.id.spinner_app);
+        accountName = findViewById(R.id.account_name);
+        accountEmail = findViewById(R.id.account_email);
     }
 
     @Override
@@ -71,20 +77,26 @@ public class AccountActivity extends AppCompatActivity {
                                 //Setting document name
                                 String name = document.getString("name");
                                 nameEditText.setText(name);
+                                accountName.setText(name);
                                 //Setting document email
                                 String email = document.getString("email");
                                 emailEditText.setText(email);
+                                accountEmail.setText(email);
                                 //Setting document password
                                 String password = document.getString("password");
                                 passwordEditText.setText(password);
                                 String appName = document.getString("appName");
-                                Log.d(TAG, appName + " - appName");
                                 //Getting current category
                                 final String currentCategory = document.getString("category");
                                 //Getting current appName
                                 final String currentAppName = document.getString("appName");
-                                //Get current
-                                //Getting link to app icon
+                                //Setting category spinner
+                                CollectionReference categoryDocRef = fstore.collection("categories");
+                                setSpinner(categoryDocRef, categorySpinner, currentCategory);
+                                //Setting app spinner
+                                CollectionReference appDocRef = fstore.collection("apps");
+                                setSpinner(appDocRef, appSpinner, currentAppName);
+                                //Setting app icon
                                 fstore.collection("apps").
                                         whereEqualTo("name", appName).get()
                                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -93,52 +105,8 @@ public class AccountActivity extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                                         String linkToIcon = document.getString("icon");
-                                                        Log.d(TAG, linkToIcon + " - link to icon");
                                                         loadAccountIcon(linkToIcon);
                                                     }
-                                                }
-                                            }
-                                        });
-                                //Setting category spinner
-                                fstore.collection("categories").get().
-                                        addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    List<String> categories = new ArrayList<>();
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                                        String category = document.getString("name");
-                                                        categories.add(category);
-                                                    }
-                                                    //Creating adapter for category spinner
-                                                    ArrayAdapter<String> categorySpinnerAdapter = new ArrayAdapter<>(
-                                                            getBaseContext(), R.layout.spinner_item, categories);
-                                                    categorySpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                                                    categorySpinner.setAdapter(categorySpinnerAdapter);
-                                                    //Getting position of current category
-                                                    int categoryPosition = categories.indexOf(currentCategory);
-                                                    categorySpinner.setSelection(categoryPosition);
-                                                }
-                                            }
-                                        });
-                                //Setting app spinner
-                                fstore.collection("apps").get().
-                                        addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    List<String> appsNames = new ArrayList<>();
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                                        String appName = document.getString("name");
-                                                        appsNames.add(appName);
-                                                    }
-                                                    //Creating adapter for app spinner
-                                                    ArrayAdapter<String> appSpinnerAdapter = new ArrayAdapter<>(
-                                                            getBaseContext(), R.layout.spinner_item, appsNames);
-                                                    appSpinner.setAdapter(appSpinnerAdapter);
-                                                    appSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                                                    int appNamePosition = appsNames.indexOf(currentAppName);
-                                                    appSpinner.setSelection(appNamePosition);
                                                 }
                                             }
                                         });
@@ -158,5 +126,32 @@ public class AccountActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(accountIconLink)
                 .into(appIcon);
+    }
+
+    private void setSpinner(CollectionReference collectionReference, final Spinner spinnerView, final String currentElement) {
+        collectionReference.get().
+                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG,"Collection successfully got");
+                            List<String> spinnerElements = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String spinnerElement = document.getString("name");
+                                Log.d(TAG, spinnerElement + " - spinnerElement+");
+                                spinnerElements.add(spinnerElement);
+                            }
+                            //Creating adapter for spinner
+                            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                                    getBaseContext(), R.layout.spinner_item, spinnerElements);
+                            spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                            spinnerView.setAdapter(spinnerAdapter);
+                            //Getting position of current category
+                            Log.d(TAG, currentElement + " - currentElement");
+                            int categoryPosition = spinnerElements.indexOf(currentElement);
+                            spinnerView.setSelection(categoryPosition);
+                        }
+                    }
+                });
     }
 }
