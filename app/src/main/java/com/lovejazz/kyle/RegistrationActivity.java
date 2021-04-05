@@ -1,13 +1,13 @@
 package com.lovejazz.kyle;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.lovejazz.kyle.EntryUtils.registrationValidateEntries;
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
+import static com.lovejazz.kyle.EntryUtils.registrationValidateEntries;
 
 //TODO Debug registration
 //TODO Write documentation
@@ -74,7 +74,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
         try {
             registrationValidateEntries(userLogin, userEmail, userPassword, userRepeatedPassword);
-
             loadingDialog.startLoadingDialog();
             Log.d(TAG, "registration is starting");
             fstore.collection("users")
@@ -86,7 +85,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         }
                     });
 
-        }catch (RegistrationException ex) {
+        } catch (RegistrationException ex) {
             makeSnackbarError(activityView, ex.getErrorCode().getErrorMessage());
         }
 

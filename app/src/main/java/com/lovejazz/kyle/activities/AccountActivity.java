@@ -1,10 +1,15 @@
-package com.lovejazz.kyle.adapters;
+package com.lovejazz.kyle.activities;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,19 +43,14 @@ public class AccountActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Spinner categorySpinner;
     private Spinner appSpinner;
+    private ImageButton copyButton;
+    private boolean copyButtonActive;
+    private String activeEditText;
 
     @Override
 
     protected void onStart() {
         super.onStart();
-        appIcon = findViewById(R.id.account_icon);
-        nameEditText = findViewById(R.id.name_edit_text);
-        emailEditText = findViewById(R.id.email_edit_text);
-        passwordEditText = findViewById(R.id.password_edit_text);
-        categorySpinner = findViewById(R.id.spinner_category);
-        appSpinner = findViewById(R.id.spinner_app);
-        accountName = findViewById(R.id.account_name);
-        accountEmail = findViewById(R.id.account_email);
     }
 
     @Override
@@ -61,10 +61,29 @@ public class AccountActivity extends AppCompatActivity {
         fstore = FirebaseFirestore.getInstance();
         //Initializing firebase firestore
         mAuth = FirebaseAuth.getInstance();
+        appIcon = findViewById(R.id.account_icon);
+        nameEditText = findViewById(R.id.name_edit_text);
+        emailEditText = findViewById(R.id.email_edit_text);
+        passwordEditText = findViewById(R.id.password_edit_text);
+        categorySpinner = findViewById(R.id.spinner_category);
+        appSpinner = findViewById(R.id.spinner_app);
+        accountName = findViewById(R.id.account_name);
+        accountEmail = findViewById(R.id.account_email);
+        copyButton = findViewById(R.id.copy_button);
         //Getting id of account record
         String ID = getAccountId();
         setAccountInfo(ID);
+        setFocusListeners();
+        copyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (copyButtonActive) {
+                    copyTextToClipBoard(activeEditText);
+                }
+            }
+        });
     }
+
 
     private void setAccountInfo(final String id) {
         fstore.collection("users").document(mAuth.getCurrentUser().getUid())
@@ -134,7 +153,7 @@ public class AccountActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG,"Collection successfully got");
+                            Log.d(TAG, "Collection successfully got");
                             List<String> spinnerElements = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String spinnerElement = document.getString("name");
@@ -153,5 +172,59 @@ public class AccountActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void setFocusListeners() {
+        //Setting focus listener for name editText
+        nameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                setStatusButton(b, "name");
+            }
+        });
+        //Setting focus listener for emailEditText
+        emailEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                setStatusButton(b, "email");
+            }
+        });
+        //Setting focus listener for passwordsEditText
+        passwordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                setStatusButton(b, "password");
+            }
+        });
+    }
+
+    private void setStatusButton(boolean isFocused, String name) {
+        if (isFocused) {
+            copyButton.setImageResource(R.drawable.copy_button_active);
+            copyButtonActive = true;
+            activeEditText = name;
+        } else {
+            copyButton.setImageResource(R.drawable.copy_button_inactive);
+            copyButtonActive = false;
+        }
+    }
+
+    private void copyTextToClipBoard(String activeEditText) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip;
+        switch (activeEditText) {
+            case "name":
+                clip = ClipData.newPlainText("Data", nameEditText.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                break;
+            case "email":
+                clip = ClipData.newPlainText("Data", emailEditText.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                break;
+            case "password":
+                clip = ClipData.newPlainText("Data", passwordEditText.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                break;
+        }
     }
 }
