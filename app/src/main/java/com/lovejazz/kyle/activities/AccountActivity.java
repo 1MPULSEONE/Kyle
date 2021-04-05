@@ -45,7 +45,7 @@ public class AccountActivity extends AppCompatActivity {
     private Spinner appSpinner;
     private ImageButton copyButton;
     private boolean copyButtonActive;
-    private String activeEditText;
+    private EditText activeEditText;
 
     @Override
 
@@ -179,52 +179,40 @@ public class AccountActivity extends AppCompatActivity {
         nameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                setStatusButton(b, "name");
+                setStatusButton(b, nameEditText);
             }
         });
         //Setting focus listener for emailEditText
         emailEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                setStatusButton(b, "email");
+                setStatusButton(b, emailEditText);
             }
         });
         //Setting focus listener for passwordsEditText
         passwordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                setStatusButton(b, "password");
+                setStatusButton(b, passwordEditText);
             }
         });
     }
 
-    private void setStatusButton(boolean isFocused, String name) {
+    private void setStatusButton(boolean isFocused, EditText activeField) {
         if (isFocused) {
             copyButton.setImageResource(R.drawable.copy_button_active);
             copyButtonActive = true;
-            activeEditText = name;
+            activeEditText = activeField;
         } else {
             copyButton.setImageResource(R.drawable.copy_button_inactive);
             copyButtonActive = false;
         }
     }
 
-    private void copyTextToClipBoard(String activeEditText) {
+    private void copyTextToClipBoard(EditText activeEditText) {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip;
-        switch (activeEditText) {
-            case "name":
-                clip = ClipData.newPlainText("Data", nameEditText.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                break;
-            case "email":
-                clip = ClipData.newPlainText("Data", emailEditText.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                break;
-            case "password":
-                clip = ClipData.newPlainText("Data", passwordEditText.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                break;
-        }
+        clip = ClipData.newPlainText("Data", activeEditText.getText().toString());
+        clipboard.setPrimaryClip(clip);
     }
 }
