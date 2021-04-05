@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -125,6 +126,7 @@ public class PasswordsFragment extends Fragment {
             public void onFailure(@NonNull Exception e) {
                 makeSnackbarError(view, getResources().getString(R.string.unexpected_error_try_later));
             }
+
         });
 
         return view;
@@ -183,7 +185,7 @@ public class PasswordsFragment extends Fragment {
     }
 
     private void getBanner(@NonNull Task<QuerySnapshot> task, String id) {
-        if (task.isSuccessful() ) {
+        if (task.isSuccessful()) {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 currentBannerReference = document.getString("banner");
                 bannerReferences.put(id, currentBannerReference);
@@ -200,12 +202,14 @@ public class PasswordsFragment extends Fragment {
     private void setMostPopularAccountsRecycler() {
         Log.d(TAG, "Creating recycler");
         Log.d(TAG, bannerReferences.toString() + " - bannerReferences");
+
+
         //Sorting data from documents
         sortMaps();
         String[] accountNamesArray = new String[mostPopularAccountsNames.size()];
         String[] bannersArray = new String[bannerReferences.size()];
 
-        int size = Math.min(bufferedStingsArray.size(), 6);
+
 
         for (int i = 0; i < bufferedStingsArray.size(); i++) {
             accountNamesArray[i] = mostPopularAccountsNames.get(bufferedStingsArray.get(i));
@@ -218,6 +222,7 @@ public class PasswordsFragment extends Fragment {
         LinearLayoutManager cardManager = new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
         creditRecycler.setLayoutManager(cardManager);
+
     }
 
     @Override
