@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.lovejazz.kyle.Account;
 import com.lovejazz.kyle.R;
+import com.lovejazz.kyle.activities.AccountActivity;
 import com.lovejazz.kyle.activities.CategoryActivity;
 
 import java.util.List;
