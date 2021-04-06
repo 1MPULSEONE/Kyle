@@ -2,6 +2,7 @@ package com.lovejazz.kyle.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.lovejazz.kyle.Account;
 import com.lovejazz.kyle.R;
+import com.lovejazz.kyle.activities.AccountActivity;
 import com.lovejazz.kyle.activities.CategoryActivity;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHolder> {
     private List<Account> accountsArrayList;
     private Activity activity;
+    private static final String TAG = "AccountAdapter";
 
     public AccountAdapter(List<Account> accountsArrayList, CategoryActivity activity) {
         this.accountsArrayList = accountsArrayList;
@@ -54,8 +57,9 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(activity, AccountActivity.class);
+                intent.putExtra("ID", accountsArrayList.get(position).getId());
+                Log.d(TAG, accountsArrayList.get(position).getId() + " - accountId");
                 activity.startActivity(intent);
-                intent.putExtra("ID",accountsArrayList.get(position).getId());
             }
         });
     }

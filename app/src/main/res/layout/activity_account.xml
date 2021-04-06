@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".adapters.AccountActivity">
+    tools:context=".activities.AccountActivity">
 
     <ImageView
         android:id="@+id/account_icon"
@@ -78,7 +78,9 @@
     <Spinner
         android:id="@+id/spinner_app"
         android:layout_width="350dp"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -104,7 +106,9 @@
     <Spinner
         android:id="@+id/spinner_category"
         android:layout_width="350dp"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/category_text"
         app:layout_constraintTop_toBottomOf="@+id/category_text"
@@ -129,6 +133,7 @@
         android:id="@+id/name_edit_text"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/proxima_nova_extrabold"
         android:hint="@string/name"
         android:inputType="textPersonName"
         android:text="@string/example_name"
@@ -162,6 +167,7 @@
         android:id="@+id/email_edit_text"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/proxima_nova_extrabold"
         android:hint="@string/email_name"
         android:inputType="textEmailAddress"
         android:text="@string/example_account_email"
@@ -195,6 +201,7 @@
         android:id="@+id/password_edit_text"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/proxima_nova_extrabold"
         android:hint="@string/password_hint"
         android:inputType="textPassword"
         android:text="@string/example_name"
@@ -220,4 +227,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_edit_text"
         app:layout_constraintVertical_bias="0.141" />
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/save_button_inactive_background"
+        android:fontFamily="@font/proxima_nova_extrabold"
+        android:text="@string/save"
+        android:textAllCaps="false"
+        android:textColor="@color/dark_grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/password_edit_text"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/password_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/ending_line"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/copy_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@null"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.855"
+        app:layout_constraintStart_toEndOf="@+id/account_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.045"
+        app:srcCompat="@drawable/copy_button_inactive" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".adapters.AccountActivity"></activity>
+        <activity
+            android:name=".activities.AccountActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
         <activity android:name=".activities.CategoryActivity" />
         <activity android:name=".RegistrationActivity" />
         <activity
