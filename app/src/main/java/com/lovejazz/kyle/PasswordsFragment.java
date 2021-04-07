@@ -93,10 +93,9 @@ public class PasswordsFragment extends Fragment {
                                     @Override
                                     public int compare(Map.Entry<String, Integer> o1, Map.
                                             Entry<String, Integer> o2) {
-                                        return o1.getValue().compareTo(o2.getValue());
+                                        return o2.getValue().compareTo(o1.getValue());
                                     }
                                 });
-                                Collections.reverse(maxCountOfClicks);
                             }
                             Log.d(TAG, maxCountOfClicks + " - maxCountOfClicks");
                             //Setting most popular accounts recycleView
@@ -134,18 +133,22 @@ public class PasswordsFragment extends Fragment {
 
     private void createPopularAccountsRecyclerView() {
         //Check if user have records
-        if (maxCountOfClicks.size() == 0) {
-            Log.d(TAG, " - maxCountOfClicks == 0");
-        } else {
             Log.d(TAG, " - maxCountOfClicks != 0");
             mostPopularAccountsNames = new TreeMap<>();
             bannerReferences = new TreeMap<>();
-            for (int i = 0; i < maxCountOfClicks.size(); i++) {
-                //Asking for user document
-                findUserById(i);
+            if (maxCountOfClicks.size() > 0 ) {
+                for (int i = 0; i < maxCountOfClicks.size(); i++) {
+                    //Asking for user document
+                    findUserById(i);
+                }
             }
-        }
+            else {
+                Log.d(TAG, "createLinkToAddButton");
+                setMostPopularAccountsRecycler();
+
+            }
     }
+
 
     private void findUserById(final int position) {
         fstore.collection("users").document(mAuth.getCurrentUser().getUid())
@@ -164,14 +167,9 @@ public class PasswordsFragment extends Fragment {
         Log.d(TAG, " - getting record info");
         if (task.isSuccessful()) {
             for (final QueryDocumentSnapshot document : task.getResult()) {
-                Log.d(TAG, document.getString("id") + " - id of record");
-                Log.d(TAG, position + " - position");
                 currentName = document.getString("name");
-                Log.d(TAG, currentName + " - currentName");
                 mostPopularAccountsNames.put(document.getString("id"), currentName);
                 currentAppName = document.getString("appName");
-                Log.d(TAG, currentAppName + " - currentAppName");
-                Log.d(TAG, "banners/" + currentAppName.toLowerCase() + "Banner.png");
                 fstore.collection("apps").whereEqualTo("name", currentAppName).
                         get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -193,6 +191,7 @@ public class PasswordsFragment extends Fragment {
                 Log.d(TAG, "comparing....");
                 if (imagePosition == mostPopularAccountsNames.size() - 1) {
                     Log.d(TAG, "comparing complete");
+                    maxCountOfClicks.add(new AbstractMap.SimpleEntry<>("s", 1));
                     setMostPopularAccountsRecycler();
                 }
             }
@@ -216,11 +215,24 @@ public class PasswordsFragment extends Fragment {
             bannersArray[i] = bannerReferences.get(bufferedStingsArray.get(i));
         }
         RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
-        MostPopularAccountsAdapter creditCardAdapter = new MostPopularAccountsAdapter
-                (accountNamesArray, bannersArray, getContext());
+
+        MostPopularAccountsAdapter creditCardAdapter;
+
+        if (bannersArray.length == 0) {
+
+            creditCardAdapter = new MostPopularAccountsAdapter(new String[] {"Добавить запись"},
+                    new String[]{"https://firebasestorage.googleapis.com/v0/b/kyle-ec562.appspot.com/o/banners%2FaddButton.png?alt=media&token=2a2e0b63-8467-4779-96cc-e47b7bd8912d"}, getContext());
+        } else {
+            creditCardAdapter = new MostPopularAccountsAdapter
+                    (accountNamesArray, bannersArray, getContext());
+        }
+
+
+        Log.d(TAG, "setAdapter");
         creditRecycler.setAdapter(creditCardAdapter);
         LinearLayoutManager cardManager = new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
+        Log.d(TAG, "setLayoutManager");
         creditRecycler.setLayoutManager(cardManager);
 
     }

@@ -1,6 +1,7 @@
 package com.lovejazz.kyle.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ public class MostPopularAccountsAdapter extends RecyclerView.Adapter<MostPopular
     private String[] names;
     private String[] storageReferences;
     private Context context;
+    public final static String TAG = "PopularAccountsAdapter";
 
     public MostPopularAccountsAdapter(String[] names, String[] storageReferences, Context context) {
         this.names = names;
@@ -39,6 +41,11 @@ public class MostPopularAccountsAdapter extends RecyclerView.Adapter<MostPopular
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         View creditCardView = holder.cardView;
         ImageView imageView = creditCardView.findViewById(R.id.most_popular_account_background);
+        Log.d(TAG, Integer.toString(position));
+        Log.d(TAG, storageReferences[0]);
+
+
+
         Glide.with(context)
                 .load(storageReferences[position])
                 .into(imageView);
