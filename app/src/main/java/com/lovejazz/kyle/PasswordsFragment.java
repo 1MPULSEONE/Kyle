@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -24,6 +26,7 @@ import com.lovejazz.kyle.adapters.MostPopularAccountsAdapter;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +49,7 @@ public class PasswordsFragment extends Fragment {
     private View view;
     private List<Category> categoriesList;
     private int imagePosition;
+    private boolean thereOnePassword;
 
     @Override
     public void onStart() {
@@ -70,8 +74,19 @@ public class PasswordsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            if (task.getResult().size() == 0) {
+                                Log.d(TAG, "thereOnePassword = true" );
+
+                                thereOnePassword = true;
+                                createPopularAccountsRecyclerView();
+                                setMostPopularAccountsRecycler();
+
+                            }
+                            int countOfClicks;
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                int countOfClicks = Integer.
+                                thereOnePassword = false;
+                                Log.d(TAG, "thereOnePassword = true" );
+                                 countOfClicks = Integer.
                                         parseInt(document.get("countOfClicks").toString());
                                 Log.d(TAG, countOfClicks + " - count of clicks");
                                 if (maxCountOfClicks.size() < 6) {
@@ -92,14 +107,15 @@ public class PasswordsFragment extends Fragment {
                                     @Override
                                     public int compare(Map.Entry<String, Integer> o1, Map.
                                             Entry<String, Integer> o2) {
-                                        return o1.getValue().compareTo(o2.getValue());
+                                        return o2.getValue().compareTo(o1.getValue());
                                     }
                                 });
-                                Collections.reverse(maxCountOfClicks);
                             }
                             Log.d(TAG, maxCountOfClicks + " - maxCountOfClicks");
                             //Setting most popular accounts recycleView
-                            createPopularAccountsRecyclerView();
+                            if (!thereOnePassword){
+                                createPopularAccountsRecyclerView();
+                            }
                         }
                     }
                 });
@@ -130,16 +146,40 @@ public class PasswordsFragment extends Fragment {
         return view;
     }
 
+    private String[] getNoPasswordsBannerInfo() {
+        Log.d(TAG, "creating array");
+        final String[] returnedArray = new String[2];
+        fstore.collection("no_passwords_banner").whereEqualTo("name", "Добавить запись").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                Log.d(TAG, "Getting record data");
+
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d(TAG, "Getting record data");
+                        returnedArray[0] = document.getString("banner");
+                        returnedArray[1] = document.getString("name");
+                    }
+                }
+            }
+        });
+        Log.d(TAG, Arrays.toString(returnedArray));
+
+        return returnedArray;
+
+
+    }
+
     private void createPopularAccountsRecyclerView() {
-        //Check if user have records
-        if (maxCountOfClicks.size() == 0) {
-            Log.d(TAG, " - maxCountOfClicks == 0");
-        } else {
-            Log.d(TAG, " - maxCountOfClicks != 0");
-            mostPopularAccountsNames = new TreeMap<>();
-            bannerReferences = new TreeMap<>();
-            for (int i = 0; i < maxCountOfClicks.size(); i++) {
-                //Asking for user document
+        Log.d(TAG, " - maxCountOfClicks != 0");
+        mostPopularAccountsNames = new TreeMap<>();
+        bannerReferences = new TreeMap<>();
+        for (int i = 0; i < maxCountOfClicks.size(); i++) {
+            //Asking for user document
+            if (!thereOnePassword){
+                Log.d(TAG, " findUserById(i)");
+
                 findUserById(i);
             }
         }
@@ -183,7 +223,7 @@ public class PasswordsFragment extends Fragment {
     }
 
     private void getBanner(@NonNull Task<QuerySnapshot> task, String id) {
-        if (task.isSuccessful() ) {
+        if (task.isSuccessful()) {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 currentBannerReference = document.getString("banner");
                 bannerReferences.put(id, currentBannerReference);
@@ -207,9 +247,16 @@ public class PasswordsFragment extends Fragment {
 
         int size = Math.min(bufferedStingsArray.size(), 6);
 
-        for (int i = 0; i < bufferedStingsArray.size(); i++) {
-            accountNamesArray[i] = mostPopularAccountsNames.get(bufferedStingsArray.get(i));
-            bannersArray[i] = bannerReferences.get(bufferedStingsArray.get(i));
+        if (thereOnePassword){
+            Log.d(TAG, "getNoPasswordsBannerInfo()");
+            String[] result = getNoPasswordsBannerInfo();
+            bannersArray[0] = result[0];
+            accountNamesArray[0] = result[1];
+        } else {
+            for (int i = 0; i < bufferedStingsArray.size(); i++) {
+                accountNamesArray[i] = mostPopularAccountsNames.get(bufferedStingsArray.get(i));
+                bannersArray[i] = bannerReferences.get(bufferedStingsArray.get(i));
+            }
         }
         RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
         MostPopularAccountsAdapter creditCardAdapter = new MostPopularAccountsAdapter
