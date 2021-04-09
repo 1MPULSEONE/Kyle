@@ -33,7 +33,7 @@ import java.util.TreeMap;
 import static com.lovejazz.kyle.EntryUtils.makeSnackbarError;
 
 public class PasswordsFragment extends Fragment {
-    private static final String TAG = "c";
+    private static final String TAG = "PasswordsFragment";
     private FirebaseFirestore fstore;
     private FirebaseAuth mAuth;
     private List<Map.Entry<String, Integer>> maxCountOfClicks;
@@ -174,7 +174,6 @@ public class PasswordsFragment extends Fragment {
                         get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        Log.d(TAG, imagePosition + " - imagePosition");
                         getBanner(task, document.getString("id"));
                         imagePosition++;
                     }
@@ -184,13 +183,14 @@ public class PasswordsFragment extends Fragment {
     }
 
     private void getBanner(@NonNull Task<QuerySnapshot> task, String id) {
-        if (task.isSuccessful()) {
-            Log.d(TAG, " - getting banner");
+        if (task.isSuccessful() ) {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 currentBannerReference = document.getString("banner");
                 bannerReferences.put(id, currentBannerReference);
                 Log.d(TAG, currentBannerReference + " - currentBannerReference");
+                Log.d(TAG, "comparing....");
                 if (imagePosition == mostPopularAccountsNames.size() - 1) {
+                    Log.d(TAG, "comparing complete");
                     setMostPopularAccountsRecycler();
                 }
             }
@@ -205,6 +205,8 @@ public class PasswordsFragment extends Fragment {
         String[] accountNamesArray = new String[mostPopularAccountsNames.size()];
         String[] bannersArray = new String[bannerReferences.size()];
 
+        int size = Math.min(bufferedStingsArray.size(), 6);
+
         for (int i = 0; i < bufferedStingsArray.size(); i++) {
             accountNamesArray[i] = mostPopularAccountsNames.get(bufferedStingsArray.get(i));
             bannersArray[i] = bannerReferences.get(bufferedStingsArray.get(i));
@@ -217,6 +219,16 @@ public class PasswordsFragment extends Fragment {
                 LinearLayoutManager.HORIZONTAL, false);
         creditRecycler.setLayoutManager(cardManager);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView");
+        mostPopularAccountsNames = null;
+        bannerReferences = null;
+        imagePosition = 0;
+    }
+
 
     private void sortMaps() {
         bufferedStingsArray = new ArrayList<>();
