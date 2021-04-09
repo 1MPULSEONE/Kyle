@@ -24,6 +24,7 @@ import com.lovejazz.kyle.adapters.MostPopularAccountsAdapter;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +47,8 @@ public class PasswordsFragment extends Fragment {
     private View view;
     private List<Category> categoriesList;
     private int imagePosition;
+    private boolean isUserWithoutRecords;
+    private String[] bannerData;
 
     @Override
     public void onStart() {
@@ -70,8 +73,19 @@ public class PasswordsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            if (task.getResult().size() == 0) {
+                                Log.d(TAG, "thereOnePassword = true");
+
+                                isUserWithoutRecords = true;
+                                createPopularAccountsRecyclerView();
+                                getNoPasswordsBannerInfo();
+
+                            }
+                            int countOfClicks;
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                int countOfClicks = Integer.
+                                isUserWithoutRecords = false;
+                                Log.d(TAG, "thereOnePassword = true");
+                                countOfClicks = Integer.
                                         parseInt(document.get("countOfClicks").toString());
                                 Log.d(TAG, countOfClicks + " - count of clicks");
                                 if (maxCountOfClicks.size() < 6) {
@@ -92,14 +106,15 @@ public class PasswordsFragment extends Fragment {
                                     @Override
                                     public int compare(Map.Entry<String, Integer> o1, Map.
                                             Entry<String, Integer> o2) {
-                                        return o1.getValue().compareTo(o2.getValue());
+                                        return o2.getValue().compareTo(o1.getValue());
                                     }
                                 });
-                                Collections.reverse(maxCountOfClicks);
                             }
                             Log.d(TAG, maxCountOfClicks + " - maxCountOfClicks");
                             //Setting most popular accounts recycleView
-                            createPopularAccountsRecyclerView();
+                            if (!isUserWithoutRecords) {
+                                createPopularAccountsRecyclerView();
+                            }
                         }
                     }
                 });
@@ -130,16 +145,46 @@ public class PasswordsFragment extends Fragment {
         return view;
     }
 
+    private void getNoPasswordsBannerInfo() {
+
+        fstore.collection("no_passwords_banner").whereEqualTo("name", "Добавить запись").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        Log.d(TAG, "Getting record data");
+
+                        if (task.isSuccessful()) {
+                            String[] accountNamesArray = new String[1];
+                            String[] bannersArray = new String[1];
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, "Getting record data");
+                                bannersArray[0] = document.getString("banner");
+                                accountNamesArray[0] = document.getString("name");
+                            }
+                            RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
+                            MostPopularAccountsAdapter creditCardAdapter = new MostPopularAccountsAdapter
+                                    (accountNamesArray, bannersArray, getContext());
+                            creditRecycler.setAdapter(creditCardAdapter);
+                            LinearLayoutManager cardManager = new LinearLayoutManager(view.getContext(),
+                                    LinearLayoutManager.HORIZONTAL, false);
+                            creditRecycler.setLayoutManager(cardManager);
+                        }
+
+                    }
+                });
+
+
+    }
+
     private void createPopularAccountsRecyclerView() {
-        //Check if user have records
-        if (maxCountOfClicks.size() == 0) {
-            Log.d(TAG, " - maxCountOfClicks == 0");
-        } else {
-            Log.d(TAG, " - maxCountOfClicks != 0");
-            mostPopularAccountsNames = new TreeMap<>();
-            bannerReferences = new TreeMap<>();
-            for (int i = 0; i < maxCountOfClicks.size(); i++) {
-                //Asking for user document
+        Log.d(TAG, " - maxCountOfClicks != 0");
+        mostPopularAccountsNames = new TreeMap<>();
+        bannerReferences = new TreeMap<>();
+        for (int i = 0; i < maxCountOfClicks.size(); i++) {
+            //Asking for user document
+            if (!isUserWithoutRecords) {
+                Log.d(TAG, " findUserById(i)");
+
                 findUserById(i);
             }
         }
@@ -183,7 +228,7 @@ public class PasswordsFragment extends Fragment {
     }
 
     private void getBanner(@NonNull Task<QuerySnapshot> task, String id) {
-        if (task.isSuccessful() ) {
+        if (task.isSuccessful()) {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 currentBannerReference = document.getString("banner");
                 bannerReferences.put(id, currentBannerReference);
@@ -205,11 +250,17 @@ public class PasswordsFragment extends Fragment {
         String[] accountNamesArray = new String[mostPopularAccountsNames.size()];
         String[] bannersArray = new String[bannerReferences.size()];
 
-        int size = Math.min(bufferedStingsArray.size(), 6);
-
-        for (int i = 0; i < bufferedStingsArray.size(); i++) {
-            accountNamesArray[i] = mostPopularAccountsNames.get(bufferedStingsArray.get(i));
-            bannersArray[i] = bannerReferences.get(bufferedStingsArray.get(i));
+        if (isUserWithoutRecords) {
+            Log.d(TAG, "getNoPasswordsBannerInfo()");
+            bannerData = new String[2];
+            getNoPasswordsBannerInfo();
+            bannersArray[0] = bannerData[0];
+            accountNamesArray[0] = bannerData[1];
+        } else {
+            for (int i = 0; i < bufferedStingsArray.size(); i++) {
+                accountNamesArray[i] = mostPopularAccountsNames.get(bufferedStingsArray.get(i));
+                bannersArray[i] = bannerReferences.get(bufferedStingsArray.get(i));
+            }
         }
         RecyclerView creditRecycler = view.findViewById(R.id.credit_card_recycler);
         MostPopularAccountsAdapter creditCardAdapter = new MostPopularAccountsAdapter
