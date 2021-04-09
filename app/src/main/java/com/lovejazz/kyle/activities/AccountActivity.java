@@ -28,15 +28,20 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.lovejazz.kyle.EntryUtils;
 import com.lovejazz.kyle.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+//TODO Refactor this code and write logic for spinners
 
 public class AccountActivity extends AppCompatActivity {
     private static final String TAG = "AccountActivity";
     private FirebaseAuth mAuth;
+    private String accountID;
     private FirebaseFirestore fstore;
     private ImageView appIcon;
     private TextView accountName;
@@ -80,8 +85,8 @@ public class AccountActivity extends AppCompatActivity {
         copyButton = findViewById(R.id.copy_button);
         saveButton = findViewById(R.id.save_button);
         //Getting id of account record
-        String ID = getAccountId();
-        setAccountInfo(ID);
+        accountID = getAccountId();
+        setAccountInfo(accountID);
         setFocusListeners();
         copyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,17 +148,17 @@ public class AccountActivity extends AppCompatActivity {
                             startName = nameEditText.getText().toString();
                             startEmail = emailEditText.getText().toString();
                             startPassword = passwordEditText.getText().toString();
-                            ArrayList<String> defaultNames = new ArrayList<>();
-                            defaultNames.add(startName);
-                            defaultNames.add(startEmail);
-                            defaultNames.add(startPassword);
+                            ArrayList<String> startValues = new ArrayList<>();
+                            startValues.add(startName);
+                            startValues.add(startEmail);
+                            startValues.add(startPassword);
                             ArrayList<EditText> editTextArrayList = new ArrayList<>();
                             editTextArrayList.add(nameEditText);
                             editTextArrayList.add(emailEditText);
                             editTextArrayList.add(passwordEditText);
-                            nameEditText.addTextChangedListener(getTextWatcher(editTextArrayList, defaultNames));
-                            emailEditText.addTextChangedListener(getTextWatcher(editTextArrayList, defaultNames));
-                            passwordEditText.addTextChangedListener(getTextWatcher(editTextArrayList, defaultNames));
+                            nameEditText.addTextChangedListener(getTextWatcher(startValues));
+                            emailEditText.addTextChangedListener(getTextWatcher(startValues));
+                            passwordEditText.addTextChangedListener(getTextWatcher(startValues));
                         }
                     }
                 });
@@ -241,8 +246,8 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     //TODO Refactor this part of code
-    private TextWatcher getTextWatcher(final ArrayList<EditText> editTexts, final ArrayList<String>
-            defaultNames) {
+    private TextWatcher getTextWatcher(final ArrayList<String>
+                                               defaultNames) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -250,22 +255,15 @@ public class AccountActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (editTexts.get(0).getText().toString().equals(defaultNames.get(0))
-                        && editTexts.get(1).getText().toString().equals(defaultNames.get(1))
-                        && editTexts.get(2).getText().toString().equals(defaultNames.get(2))) {
+                if (nameEditText.getText().toString().equals(defaultNames.get(0))
+                        && emailEditText.getText().toString().equals(defaultNames.get(1))
+                        && passwordEditText.getText().toString().equals(defaultNames.get(2))) {
                     saveButtonActive = false;
                     Log.d(TAG, "Button become inactive");
                     saveButton.setBackgroundResource(R.drawable.save_button_inactive_background);
                     saveButton.setTextColor(getResources().getColor(R.color.grey));
                 } else {
                     saveButtonActive = true;
-                    Log.d(TAG, "Button become active");
-                    Log.d(TAG, editTexts.get(0).getText().toString() + " - first entry");
-                    Log.d(TAG, startName + " - startName");
-                    Log.d(TAG, editTexts.get(1).getText().toString() + " - second entry");
-                    Log.d(TAG, startEmail + " - startEmail");
-                    Log.d(TAG, editTexts.get(2).getText().toString() + " - third entry");
-                    Log.d(TAG, startPassword + " - startPassword    ");
                     saveButton.setBackgroundResource(R.drawable.save_button_active_background);
                     saveButton.setTextColor(getResources().getColor(R.color.white));
                 }
@@ -277,5 +275,35 @@ public class AccountActivity extends AppCompatActivity {
 
             }
         };
+    }
+
+    public void onSaveButtonClicked(View view) {
+        if (saveButtonActive) {
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("appName", appSpinner.getSelectedItem());
+            updates.put("category", categorySpinner.getSelectedItem());
+            updates.put("email", emailEditText.getText().toString());
+            updates.put("name", nameEditText.getText().toString());
+            updates.put("password", passwordEditText.getText().toString());
+            saveButtonActive = false;
+            saveButton.setBackgroundResource(R.drawable.save_button_inactive_background);
+            saveButton.setTextColor(getResources().getColor(R.color.grey));
+            startName = nameEditText.getText().toString();
+            startEmail = emailEditText.getText().toString();
+            startPassword = passwordEditText.getText().toString();
+            ArrayList<String> startValues = new ArrayList<>();
+            startValues.add(startName);
+            startValues.add(startEmail);
+            startValues.add(startPassword);
+            nameEditText.addTextChangedListener(getTextWatcher(startValues));
+            emailEditText.addTextChangedListener(getTextWatcher(startValues));
+            passwordEditText.addTextChangedListener(getTextWatcher(startValues));
+            fstore.collection("users").document(mAuth.getCurrentUser().getUid())
+                    .collection("accounts").
+                    document(accountID).update(updates);
+            Log.d(TAG, startName + " - startName");
+            EntryUtils.makeSnackbarMessage(view, getResources().
+                    getString(R.string.record_successfully_updated));
+        }
     }
 }

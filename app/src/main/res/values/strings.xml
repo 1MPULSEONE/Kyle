@@ -85,6 +85,7 @@
     <string name="incorrect_email_or_password_entered">Введена не правильная почта или пароль
     </string>
     <string name="logging_in_to_your_account">Входим в аккаунт</string>
+    <string name="record_successfully_updated">Запись успешно обновлена!</string>
     <!--Dialog strings -->
     <string name="creating_user">Создаём пользователя</string>
     <!--Type spinner strings -->
