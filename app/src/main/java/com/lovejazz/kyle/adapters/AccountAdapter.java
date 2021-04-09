@@ -14,17 +14,26 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.lovejazz.kyle.Account;
 import com.lovejazz.kyle.R;
 import com.lovejazz.kyle.activities.AccountActivity;
 import com.lovejazz.kyle.activities.CategoryActivity;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHolder> {
     private List<Account> accountsArrayList;
     private Activity activity;
     private static final String TAG = "AccountAdapter";
+    private FirebaseFirestore fstore;
+    private FirebaseAuth mAuth;
 
     public AccountAdapter(List<Account> accountsArrayList, CategoryActivity activity) {
         this.accountsArrayList = accountsArrayList;
@@ -56,10 +65,30 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
         accountCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, AccountActivity.class);
-                intent.putExtra("ID", accountsArrayList.get(position).getId());
-                Log.d(TAG, accountsArrayList.get(position).getId() + " - accountId");
-                activity.startActivity(intent);
+                fstore = FirebaseFirestore.getInstance();
+                mAuth = FirebaseAuth.getInstance();
+                final DocumentReference accountReference = fstore.collection("users").document(mAuth.getCurrentUser().getUid())
+                        .collection("accounts").
+                                document(accountsArrayList.get(position).getId());
+                accountReference.get().
+                        addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    long countOfCLicks = (long) Objects.requireNonNull(task.getResult().
+                                            get("countOfClicks")) + 1;
+                                    accountReference.update("countOfClicks", countOfCLicks).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Intent intent = new Intent(activity, AccountActivity.class);
+                                            intent.putExtra("ID", accountsArrayList.get(position).getId());
+                                            Log.d(TAG, accountsArrayList.get(position).getId() + " - accountId");
+                                            activity.startActivity(intent);
+                                        }
+                                    });
+                                }
+                            }
+                        });
             }
         });
     }
