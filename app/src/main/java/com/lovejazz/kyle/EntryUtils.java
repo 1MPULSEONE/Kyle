@@ -25,6 +25,18 @@ public abstract class EntryUtils {
                 .show();
     }
 
+    public static void makeSnackbarMessage (View view, String message) {
+        Snackbar
+                .make(
+                        view,
+                        message,
+                        Snackbar.LENGTH_LONG
+                )
+                .setTextColor(view.getContext().getResources().getColor(R.color.full_white))
+                .setBackgroundTint(view.getContext().getResources().getColor(R.color.green))
+                .show();
+    }
+
     public static void registrationValidateEntries(String userLogin, String userEmail,
                                                    String userPassword, String userRepeatedPassword) throws RegistrationException {
         Log.d(TAG, "start validating");
