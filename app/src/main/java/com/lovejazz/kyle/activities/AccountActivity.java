@@ -5,9 +5,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,15 +28,20 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.lovejazz.kyle.EntryUtils;
 import com.lovejazz.kyle.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+//TODO Refactor this code and write logic for spinners
 
 public class AccountActivity extends AppCompatActivity {
     private static final String TAG = "AccountActivity";
     private FirebaseAuth mAuth;
+    private String accountID;
     private FirebaseFirestore fstore;
     private ImageView appIcon;
     private TextView accountName;
@@ -45,7 +53,12 @@ public class AccountActivity extends AppCompatActivity {
     private Spinner appSpinner;
     private ImageButton copyButton;
     private boolean copyButtonActive;
+    private boolean saveButtonActive;
     private EditText activeEditText;
+    private Button saveButton;
+    private String startName;
+    private String startEmail;
+    private String startPassword;
 
     @Override
 
@@ -70,9 +83,10 @@ public class AccountActivity extends AppCompatActivity {
         accountName = findViewById(R.id.account_name);
         accountEmail = findViewById(R.id.account_email);
         copyButton = findViewById(R.id.copy_button);
+        saveButton = findViewById(R.id.save_button);
         //Getting id of account record
-        String ID = getAccountId();
-        setAccountInfo(ID);
+        accountID = getAccountId();
+        setAccountInfo(accountID);
         setFocusListeners();
         copyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +144,21 @@ public class AccountActivity extends AppCompatActivity {
                                             }
                                         });
                             }
+                            //Getting start values
+                            startName = nameEditText.getText().toString();
+                            startEmail = emailEditText.getText().toString();
+                            startPassword = passwordEditText.getText().toString();
+                            ArrayList<String> startValues = new ArrayList<>();
+                            startValues.add(startName);
+                            startValues.add(startEmail);
+                            startValues.add(startPassword);
+                            ArrayList<EditText> editTextArrayList = new ArrayList<>();
+                            editTextArrayList.add(nameEditText);
+                            editTextArrayList.add(emailEditText);
+                            editTextArrayList.add(passwordEditText);
+                            nameEditText.addTextChangedListener(getTextWatcher(startValues));
+                            emailEditText.addTextChangedListener(getTextWatcher(startValues));
+                            passwordEditText.addTextChangedListener(getTextWatcher(startValues));
                         }
                     }
                 });
@@ -214,5 +243,67 @@ public class AccountActivity extends AppCompatActivity {
         ClipData clip;
         clip = ClipData.newPlainText("Data", activeEditText.getText().toString());
         clipboard.setPrimaryClip(clip);
+    }
+
+    //TODO Refactor this part of code
+    private TextWatcher getTextWatcher(final ArrayList<String>
+                                               defaultNames) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (nameEditText.getText().toString().equals(defaultNames.get(0))
+                        && emailEditText.getText().toString().equals(defaultNames.get(1))
+                        && passwordEditText.getText().toString().equals(defaultNames.get(2))) {
+                    saveButtonActive = false;
+                    Log.d(TAG, "Button become inactive");
+                    saveButton.setBackgroundResource(R.drawable.save_button_inactive_background);
+                    saveButton.setTextColor(getResources().getColor(R.color.grey));
+                } else {
+                    saveButtonActive = true;
+                    saveButton.setBackgroundResource(R.drawable.save_button_active_background);
+                    saveButton.setTextColor(getResources().getColor(R.color.white));
+                }
+                Log.d(TAG, "onTextChanged: ");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+    }
+
+    public void onSaveButtonClicked(View view) {
+        if (saveButtonActive) {
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("appName", appSpinner.getSelectedItem());
+            updates.put("category", categorySpinner.getSelectedItem());
+            updates.put("email", emailEditText.getText().toString());
+            updates.put("name", nameEditText.getText().toString());
+            updates.put("password", passwordEditText.getText().toString());
+            saveButtonActive = false;
+            saveButton.setBackgroundResource(R.drawable.save_button_inactive_background);
+            saveButton.setTextColor(getResources().getColor(R.color.grey));
+            startName = nameEditText.getText().toString();
+            startEmail = emailEditText.getText().toString();
+            startPassword = passwordEditText.getText().toString();
+            ArrayList<String> startValues = new ArrayList<>();
+            startValues.add(startName);
+            startValues.add(startEmail);
+            startValues.add(startPassword);
+            nameEditText.addTextChangedListener(getTextWatcher(startValues));
+            emailEditText.addTextChangedListener(getTextWatcher(startValues));
+            passwordEditText.addTextChangedListener(getTextWatcher(startValues));
+            fstore.collection("users").document(mAuth.getCurrentUser().getUid())
+                    .collection("accounts").
+                    document(accountID).update(updates);
+            Log.d(TAG, startName + " - startName");
+            EntryUtils.makeSnackbarMessage(view, getResources().
+                    getString(R.string.record_successfully_updated));
+        }
     }
 }
