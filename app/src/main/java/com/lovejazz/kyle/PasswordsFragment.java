@@ -119,6 +119,7 @@ public class PasswordsFragment extends Fragment {
                     }
                 });
         categoriesList = new ArrayList<>();
+
         //Getting categories from firestore
         fstore.collection("categories").get().
                 addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
